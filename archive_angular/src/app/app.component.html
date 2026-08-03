@@ -1,0 +1,45 @@
+<header class="topbar">
+  <div class="brand">
+    <span class="mark">B</span>
+    Borrower Portal
+    <span style="font-weight: 400; color: #bcd0e2;">/ Project Note</span>
+  </div>
+  <div class="save-state" id="saveState">● Saved automatically</div>
+</header>
+
+<div class="layout">
+  <aside>
+    <div class="nav-label">Application</div>
+    <button 
+      class="nav-item" 
+      [class.active]="stateService.activeScreen === 'dashboard'"
+      (click)="stateService.setScreen('dashboard')">
+      Overview
+    </button>
+    
+    <div class="nav-label">Project note modules</div>
+    <div>
+      <button 
+        *ngFor="let m of stateService.modules; let i = index"
+        class="nav-item"
+        [class.active]="stateService.activeScreen === 'moduleScreen' && stateService.activeModuleName === m.name"
+        (click)="stateService.openModule(m.name)">
+        {{ i + 1 }}. {{ m.name }}
+      </button>
+    </div>
+
+    <div class="nav-label">Finalise</div>
+    <button 
+      class="nav-item" 
+      [class.active]="stateService.activeScreen === 'review'"
+      (click)="stateService.setScreen('review')">
+      Review &amp; export
+    </button>
+  </aside>
+
+  <main [ngSwitch]="stateService.activeScreen">
+    <app-dashboard *ngSwitchCase="'dashboard'"></app-dashboard>
+    <app-module-editor *ngSwitchCase="'moduleScreen'"></app-module-editor>
+    <app-review *ngSwitchCase="'review'"></app-review>
+  </main>
+</div>

@@ -1,0 +1,44 @@
+<div class="page-head">
+  <div>
+    <div class="eyebrow">Loan application workspace</div>
+    <h1>Project Note – Mango Group</h1>
+    <div class="muted">Complete the project note section by section. Your information saves automatically.</div>
+  </div>
+  <button class="button primary" (click)="stateService.openModule('About Borrowing Entity and Group')">Continue application</button>
+</div>
+
+<div class="grid">
+  <div class="card">
+    <div class="stat-label">Completion</div>
+    <div class="stat-value" id="completion">{{ stateService.getCompletionPercentage() }}%</div>
+    <div class="muted">{{ stateService.getStartedModulesCount() }} of 13 modules started</div>
+    <div class="progress"><span [style.width]="getCompletionWidth()"></span></div>
+  </div>
+  <div class="card">
+    <div class="stat-label">Project note modules</div>
+    <div class="stat-value">13</div>
+    <div class="muted">Based on your source document</div>
+  </div>
+  <div class="card">
+    <div class="stat-label">Supporting documents</div>
+    <div class="stat-value" id="fileCount">{{ stateService.state.files || 0 }}</div>
+    <div class="muted">Files selected this session</div>
+  </div>
+</div>
+
+<div class="page-head" style="margin-top: 28px; margin-bottom: 13px">
+  <div>
+    <h1 style="font-size: 20px">Complete a module</h1>
+    <div class="muted">Every module can contain multiple records.</div>
+  </div>
+</div>
+
+<div id="moduleCards" class="module-list">
+  <button class="module" *ngFor="let m of stateService.modules; let i = index" (click)="stateService.openModule(m.name)">
+    <span class="module-no">{{ i + 1 | number:'2.0-0' }}</span>
+    <span>
+      <strong>{{ m.name }}</strong>
+      <small>{{ getPluralizedRecordType(m.recordType) }}</small>
+    </span>
+  </button>
+</div>

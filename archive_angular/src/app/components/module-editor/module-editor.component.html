@@ -1,0 +1,335 @@
+<div class="page-head">
+  <div>
+    <div class="eyebrow">Project note module</div>
+    <h1 id="moduleTitle">{{ activeModule.name }}</h1>
+    <div class="muted" id="moduleDescription">{{ activeModule.description }}</div>
+  </div>
+  <span class="badge">Saved automatically</span>
+</div>
+
+<div class="content-grid">
+  <div>
+    <div class="card">
+      <!-- Standard Input Form -->
+      <div id="standardForm" *ngIf="!isCostModule && !isFamilyModule">
+        <div class="form-grid">
+          <label class="field">
+            Record name
+            <input [(ngModel)]="recordName" placeholder="Enter name">
+          </label>
+          <label class="field">
+            Reference / registration number
+            <input [(ngModel)]="reference" placeholder="Enter reference">
+          </label>
+          <label class="field full">
+            Details
+            <textarea [(ngModel)]="details" placeholder="Add relevant information for this record"></textarea>
+          </label>
+        </div>
+      </div>
+
+      <!-- Table Workspace -->
+      <div id="tableWorkspace" *ngIf="tableHeaders.length > 0 && !isFamilyModule">
+        <div class="notice">
+          Column labels match the Project Note. Add any number of rows; numeric columns are totalled automatically.
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th *ngFor="let h of tableHeaders">{{ h }}</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of getTableRows(); let r = index">
+                <td *ngFor="let h of tableHeaders; let c = index">
+                  <input 
+                    [type]="stateService.isNumericColumn(h) ? 'number' : 'text'"
+                    [class.numeric]="stateService.isNumericColumn(h)"
+                    [value]="row[c] || ''"
+                    (input)="onCellInput(r, c, $event)">
+                </td>
+                <td>
+                  <button class="button ghost danger" (click)="deleteTableRow(r)">Remove</button>
+                </td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <th *ngFor="let h of tableHeaders; let c = index">
+                  <ng-container *ngIf="stateService.isNumericColumn(h) && c > 0">
+                    Total: <span>{{ stateService.getTableColTotal(activeModule.name, c) }}</span>
+                  </ng-container>
+                </th>
+                <th></th>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+        <div style="margin-top: 12px;">
+          <button class="button" (click)="addTableRow()">+ Add row</button>
+        </div>
+      </div>
+
+      <!-- Group Tables for Borrowing Entity -->
+      <div id="groupTables" *ngIf="isGroupModule">
+        <!-- Shareholders Table -->
+        <div style="margin-top: 22px;">
+          <strong>The list of shareholders of Mango Realty Pvt Ltd. is as follows:</strong>
+          <div class="table-wrap" style="margin-top: 8px;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Name of Shareholder</th>
+                  <th>No. of Shares</th>
+                  <th>Shareholding in %</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of getGroupTable('shareholders'); let r = index">
+                  <td><input type="text" [value]="row[0]" (input)="onGroupCellInput('shareholders', r, 0, $event)"></td>
+                  <td><input type="number" class="numeric" [value]="row[1]" (input)="onGroupCellInput('shareholders', r, 1, $event)"></td>
+                  <td><input type="number" class="numeric" [value]="row[2]" (input)="onGroupCellInput('shareholders', r, 2, $event)"></td>
+                  <td><button class="button ghost danger" (click)="deleteGroupRow('shareholders', r)">Remove</button></td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Total</th>
+                  <th><span>{{ stateService.getGroupTableColTotal('shareholders', 1) }}</span></th>
+                  <th><span>{{ stateService.getGroupTableColTotal('shareholders', 2) }}</span></th>
+                  <th></th>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+          <button class="button" style="margin-top: 9px;" (click)="addGroupRow('shareholders')">+ Add row</button>
+        </div>
+
+        <!-- Beneficiaries Table -->
+        <div style="margin-top: 22px;">
+          <strong>Following is the shareholding / beneficiaries of Shareholder 1:</strong>
+          <div class="table-wrap" style="margin-top: 8px;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Name of Beneficiary</th>
+                  <th>% of Holding</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of getGroupTable('beneficiaries'); let r = index">
+                  <td><input type="text" [value]="row[0]" (input)="onGroupCellInput('beneficiaries', r, 0, $event)"></td>
+                  <td><input type="number" class="numeric" [value]="row[1]" (input)="onGroupCellInput('beneficiaries', r, 1, $event)"></td>
+                  <td><button class="button ghost danger" (click)="deleteGroupRow('beneficiaries', r)">Remove</button></td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Total</th>
+                  <th><span>{{ stateService.getGroupTableColTotal('beneficiaries', 1) }}</span></th>
+                  <th></th>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+          <button class="button" style="margin-top: 9px;" (click)="addGroupRow('beneficiaries')">+ Add row</button>
+        </div>
+
+        <!-- Directors Table -->
+        <div style="margin-top: 22px;">
+          <strong>The list of Directors of Mango Realty Pvt Ltd. is as follows:</strong>
+          <div class="table-wrap" style="margin-top: 8px;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Designation</th>
+                  <th>DIN No.</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of getGroupTable('directors'); let r = index">
+                  <td><input type="text" [value]="row[0]" (input)="onGroupCellInput('directors', r, 0, $event)"></td>
+                  <td><input type="text" [value]="row[1]" (input)="onGroupCellInput('directors', r, 1, $event)"></td>
+                  <td><input type="text" [value]="row[2]" (input)="onGroupCellInput('directors', r, 2, $event)"></td>
+                  <td><button class="button ghost danger" (click)="deleteGroupRow('directors', r)">Remove</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <button class="button" style="margin-top: 9px;" (click)="addGroupRow('directors')">+ Add row</button>
+        </div>
+      </div>
+
+      <!-- Cost of Project & Means of Finance -->
+      <div id="calculationForm" *ngIf="isCostModule">
+        <div class="notice">
+          Amounts are in lakhs. Total Project Cost (A) updates as you type.
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Project Cost</th>
+                <th>Mango - Mass I<br><span class="muted">Amt. Rs. In lakh</span></th>
+                <th>Mango - Mass II<br><span class="muted">Amt. Rs. In lakh</span></th>
+                <th>Total<br><span class="muted">Amt. Rs. In lakh</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Land cost (Indexed Price)</td>
+                <td><input class="numeric" type="number" [value]="stateService.state.costCalculation?.phase1?.[0] || 0" (input)="onCostCellInput('phase1', 0, $event)"></td>
+                <td><input class="numeric" type="number" [value]="stateService.state.costCalculation?.phase2?.[0] || 0" (input)="onCostCellInput('phase2', 0, $event)"></td>
+                <td style="text-align: right;">{{ stateService.getCostRowTotals()[0] }}</td>
+              </tr>
+              <tr>
+                <td>Construction Costs</td>
+                <td><input class="numeric" type="number" [value]="stateService.state.costCalculation?.phase1?.[1] || 0" (input)="onCostCellInput('phase1', 1, $event)"></td>
+                <td><input class="numeric" type="number" [value]="stateService.state.costCalculation?.phase2?.[1] || 0" (input)="onCostCellInput('phase2', 1, $event)"></td>
+                <td style="text-align: right;">{{ stateService.getCostRowTotals()[1] }}</td>
+              </tr>
+              <tr>
+                <td>FSI / TDR Cost</td>
+                <td><input class="numeric" type="number" [value]="stateService.state.costCalculation?.phase1?.[2] || 0" (input)="onCostCellInput('phase1', 2, $event)"></td>
+                <td><input class="numeric" type="number" [value]="stateService.state.costCalculation?.phase2?.[2] || 0" (input)="onCostCellInput('phase2', 2, $event)"></td>
+                <td style="text-align: right;">{{ stateService.getCostRowTotals()[2] }}</td>
+              </tr>
+              <tr>
+                <td>Admin, Legal &amp; Other cost</td>
+                <td><input class="numeric" type="number" [value]="stateService.state.costCalculation?.phase1?.[3] || 0" (input)="onCostCellInput('phase1', 3, $event)"></td>
+                <td><input class="numeric" type="number" [value]="stateService.state.costCalculation?.phase2?.[3] || 0" (input)="onCostCellInput('phase2', 3, $event)"></td>
+                <td style="text-align: right;">{{ stateService.getCostRowTotals()[3] }}</td>
+              </tr>
+              <tr>
+                <td>Finance Cost</td>
+                <td><input class="numeric" type="number" [value]="stateService.state.costCalculation?.phase1?.[4] || 0" (input)="onCostCellInput('phase1', 4, $event)"></td>
+                <td><input class="numeric" type="number" [value]="stateService.state.costCalculation?.phase2?.[4] || 0" (input)="onCostCellInput('phase2', 4, $event)"></td>
+                <td style="text-align: right;">{{ stateService.getCostRowTotals()[4] }}</td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <th>Total Project Cost (A)</th>
+                <th style="text-align: right;">{{ stateService.getCostTotals().phase1 | number:'1.2-2' }}</th>
+                <th style="text-align: right;">{{ stateService.getCostTotals().phase2 | number:'1.2-2' }}</th>
+                <th style="text-align: right;">{{ stateService.getCostTotals().total | number:'1.2-2' }}</th>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+        <div class="totals">
+          <div class="total-box">
+            <span>Mango - Mass I</span>
+            <strong>₹ {{ stateService.getCostTotals().phase1 | number:'1.2-2' }} L</strong>
+          </div>
+          <div class="total-box">
+            <span>Mango - Mass II</span>
+            <strong>₹ {{ stateService.getCostTotals().phase2 | number:'1.2-2' }} L</strong>
+          </div>
+          <div class="total-box">
+            <span>Total Project Cost (A)</span>
+            <strong>₹ {{ stateService.getCostTotals().total | number:'1.2-2' }} L</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Family Chart visual tree -->
+      <div id="familyChartWorkspace" *ngIf="isFamilyModule">
+        <div class="notice">
+          Add any family member and select the person they are related to. The flow chart expands automatically.
+        </div>
+        
+        <div class="family-editor">
+          <input [(ngModel)]="newFamilyName" placeholder="Person name">
+          <select [(ngModel)]="newFamilyRelation">
+            <option>Spouse</option>
+            <option>Child</option>
+            <option>Parent</option>
+            <option>Sibling</option>
+            <option>Other relation</option>
+          </select>
+          <select [(ngModel)]="newFamilyParent">
+            <option value="">No linked person (root)</option>
+            <option *ngFor="let p of getAllPeople()" [value]="p.id">{{ p.name }}</option>
+          </select>
+          <button class="button primary" (click)="addFamilyMember()">Add relation</button>
+        </div>
+
+        <div class="family-canvas">
+          <div class="family-flow" aria-label="Editable family relationship flow chart">
+            <div *ngFor="let root of getRootPeople()">
+              <ng-container *ngTemplateOutlet="nodeTemplate; context:{ person: root }"></ng-container>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recursive Template for Nodes -->
+        <ng-template #nodeTemplate let-person="person">
+          <div class="family-branch">
+            <div class="family-node">
+              <strong>{{ person.name }}</strong>
+              <span>{{ person.relation }}</span>
+              <button class="button ghost danger" style="padding: 2px 6px; font-size: 10px; margin-top: 4px;" (click)="deleteFamilyMember(person.id)">×</button>
+            </div>
+            <div *ngIf="getChildren(person.id).length > 0" class="connector"></div>
+            <div *ngIf="getChildren(person.id).length > 0" class="family-siblings">
+              <div *ngFor="let child of getChildren(person.id)">
+                <ng-container *ngTemplateOutlet="nodeTemplate; context:{ person: child }"></ng-container>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </div>
+
+      <!-- Records Section (For non-family screens) -->
+      <div class="record-head" *ngIf="!isFamilyModule">
+        <strong id="recordsHeading">Saved {{ activeModule.recordType }} records</strong>
+        <button class="button" (click)="addRecord()">+ Add record</button>
+      </div>
+      <div id="records" *ngIf="!isFamilyModule">
+        <div class="record" *ngFor="let r of moduleData.records; let i = index">
+          <div>
+            <div class="record-name">{{ r.name }}</div>
+            <div class="record-meta">{{ r.details || 'No details added' }}</div>
+          </div>
+          <button class="button ghost danger" (click)="removeRecord(i)">Remove</button>
+        </div>
+        <div class="muted" *ngIf="moduleData.records.length === 0">
+          No records added yet. Use “Add record” to create one.
+        </div>
+      </div>
+
+      <!-- Dropzone section (For non-family screens) -->
+      <div class="dropzone" *ngIf="!isFamilyModule">
+        <strong>Upload images and supporting documents</strong>
+        <div class="muted">Project photographs, location maps, financial statements, schedules, and annexures</div>
+        <input id="fileInput" type="file" multiple (change)="onFileSelected($event)">
+      </div>
+
+      <!-- Action buttons -->
+      <div style="margin-top: 16px; display: flex; justify-content: space-between; gap: 10px;">
+        <button class="button" (click)="stateService.setScreen('dashboard')">Back to overview</button>
+        <button class="button primary" (click)="stateService.setScreen('review')">Save &amp; review</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sidebar Guidelines Pane -->
+  <aside>
+    <div class="card sidebar-card">
+      <h3>What to add</h3>
+      <ol id="guidance">
+        <li *ngFor="let g of activeModule.guidance">{{ g }}</li>
+      </ol>
+      <hr style="border: 0; border-top: 1px solid var(--line); margin: 16px 0;">
+      <div class="stat-label">Record model</div>
+      <div id="recordModel" style="margin-top: 4px; font-weight: 650;">{{ activeModule.recordType }}</div>
+    </div>
+  </aside>
+</div>

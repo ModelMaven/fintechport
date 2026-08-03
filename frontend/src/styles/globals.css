@@ -1,0 +1,35 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-brand-background text-brand-textPrimary font-sans antialiased;
+  }
+}
+
+/* Custom premium scrollbars for live editor & preview */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F7F8FA;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #E5E7EB;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #C4C4C4;
+}
+
+/* Animations for pill navigation highlights */
+.pill-active-transition {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}

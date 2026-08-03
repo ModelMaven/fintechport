@@ -1,0 +1,42 @@
+<div class="page-head">
+  <div>
+    <div class="eyebrow">Finalise</div>
+    <h1>Review &amp; export Project Note</h1>
+    <div class="muted">Check all modules before sharing the completed package with the bank.</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Module</th>
+          <th>Records</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let m of stateService.modules">
+          <td>{{ m.name }}</td>
+          <td>{{ getRecordCount(m.name) }}</td>
+          <td>
+            <span class="badge" [style.background]="getStatusText(m.name) === 'Not started' ? '#f1f5f9' : '#e8f5ee'" [style.color]="getStatusText(m.name) === 'Not started' ? '#475569' : '#18794e'">
+              {{ getStatusText(m.name) }}
+            </span>
+          </td>
+          <td>
+            <button class="button" (click)="stateService.openModule(m.name)">Open</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px;">
+    <button class="button primary" (click)="mockAction('Preview')">Preview Project Note</button>
+    <button class="button" (click)="mockAction('Download PDF')">Download PDF</button>
+    <button class="button" (click)="mockAction('Download Word')">Download Word</button>
+    <button class="button" (click)="mockAction('Submit')">Submit to bank</button>
+  </div>
+</div>
