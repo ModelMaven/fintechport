@@ -1,0 +1,54 @@
+services:
+  # 1. FastAPI Backend Web Service
+  - type: web
+    name: loancraft-backend
+    env: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: loancraft-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: loancraft-redis
+          property: connectionString
+      - key: ENVIRONMENT
+        value: production
+      - key: CLERK_API_KEY
+        value: mock_clerk_key
+      - key: OPENAI_API_KEY
+        value: mock_openai_key
+      - key: GOOGLE_DOC_AI_KEY
+        value: mock_doc_ai_key
+
+  # 2. Next.js Frontend Web Service
+  - type: web
+    name: loancraft-frontend
+    env: node
+    rootDir: frontend
+    buildCommand: npm install --legacy-peer-deps && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NEXT_PUBLIC_API_URL
+        fromService:
+          type: web
+          name: loancraft-backend
+          property: url
+      - key: NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+        value: pk_test_mock
+
+# Databases and Cache Definitions
+databases:
+  - name: loancraft-db
+    databaseName: loancraft_db
+    user: loancraft_user
+    plan: free
+
+redis:
+  - name: loancraft-redis
+    plan: free
+    ipAllowList: []
