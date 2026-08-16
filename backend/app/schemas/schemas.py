@@ -32,6 +32,7 @@ class BorrowerBase(BaseModel):
     constitution: str
     industry: str
     registration_number: Optional[str] = None
+    pan: Optional[str] = None
     date_of_incorporation: Optional[date] = None
     registered_address: Optional[str] = None
     office_address: Optional[str] = None

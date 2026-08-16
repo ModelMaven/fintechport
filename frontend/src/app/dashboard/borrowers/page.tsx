@@ -29,6 +29,7 @@ export default function BorrowersPage() {
   const [incDate, setIncDate] = useState("");
   const [regAddr, setRegAddr] = useState("");
   const [officeAddr, setOfficeAddr] = useState("");
+  const [pan, setPan] = useState("");
   
   // Promoter details list
   const [promoters, setPromoters] = useState<any[]>([
@@ -75,6 +76,7 @@ export default function BorrowersPage() {
       constitution: constitution,
       industry: industry,
       registration_number: regNo || null,
+      pan: pan || null,
       date_of_incorporation: incDate || null,
       registered_address: regAddr || null,
       office_address: officeAddr || null,
@@ -94,7 +96,8 @@ export default function BorrowersPage() {
       setIncDate("");
       setRegAddr("");
       setOfficeAddr("");
-      setPromoters([{ name: "", age: 45, equity_percentage: 100, net_worth: 10000000.00 }]);
+      setPan("");
+      setPromoters([{ name: "", age: 45, equity_percentage: 100, net_worth: 0.00 }]);
       loadData();
     } catch (err) {
       alert("Failed to create borrower profile: " + err);
@@ -167,6 +170,9 @@ export default function BorrowersPage() {
                   <p className="flex items-center gap-1.5"><Briefcase size={12} /> {borrower.industry}</p>
                   {borrower.registration_number && (
                     <p className="flex items-center gap-1.5"><CreditCard size={12} /> Reg: {borrower.registration_number}</p>
+                  )}
+                  {borrower.pan && (
+                    <p className="flex items-center gap-1.5"><CreditCard size={12} /> PAN: {borrower.pan}</p>
                   )}
                   {borrower.registered_address && (
                     <p className="flex items-center gap-1.5"><MapPin size={12} className="flex-shrink-0" /> <span className="truncate">{borrower.registered_address}</span></p>
@@ -259,6 +265,16 @@ export default function BorrowersPage() {
                     type="date" 
                     value={incDate}
                     onChange={(e) => setIncDate(e.target.value)}
+                    className="w-full p-2.5 border border-brand-border rounded-lg bg-brand-surface outline-none focus:border-brand-primary"
+                  />
+                </div>
+                <div>
+                  <label className="block font-bold text-brand-textSecondary mb-1.5">Company PAN</label>
+                  <input 
+                    type="text" 
+                    value={pan}
+                    onChange={(e) => setPan(e.target.value)}
+                    placeholder="e.g. ABCDE1234F"
                     className="w-full p-2.5 border border-brand-border rounded-lg bg-brand-surface outline-none focus:border-brand-primary"
                   />
                 </div>

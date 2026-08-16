@@ -27,6 +27,7 @@ class Borrower(Base):
     constitution = Column(String, nullable=False)  # Pvt Ltd, LLP, Partnership, MSME, Startup, etc.
     industry = Column(String, nullable=False)      # Real Estate, Manufacturing, Hospital, Hotel, etc.
     registration_number = Column(String, nullable=True)
+    pan = Column(String, nullable=True)
     date_of_incorporation = Column(Date, nullable=True)
     registered_address = Column(Text, nullable=True)
     office_address = Column(Text, nullable=True)
