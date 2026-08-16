@@ -71,11 +71,8 @@ export default function LandingPage() {
           </nav>
 
           <div className="hidden md:flex items-center gap-4">
-            <Link href="/dashboard" className="px-4 py-2 text-sm font-medium text-brand-textSecondary hover:text-brand-textPrimary transition-colors">
-              Sign In
-            </Link>
             <Link href="/dashboard" className="px-5 py-2.5 bg-brand-primary hover:bg-brand-primaryHover text-white text-sm font-medium rounded-full shadow-sm transition-colors">
-              Start Free
+              Get Started
             </Link>
           </div>
 
@@ -94,8 +91,7 @@ export default function LandingPage() {
             <a href="#pricing" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-brand-textSecondary">Pricing</a>
             <a href="#faq" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-brand-textSecondary">FAQ</a>
             <hr className="border-brand-border" />
-            <Link href="/dashboard" className="text-sm font-medium text-brand-textSecondary">Sign In</Link>
-            <Link href="/dashboard" className="w-full text-center py-2.5 bg-brand-primary text-white text-sm font-medium rounded-full">Start Free</Link>
+            <Link href="/dashboard" className="w-full text-center py-2.5 bg-brand-primary text-white text-sm font-medium rounded-full">Get Started</Link>
           </div>
         )}
       </header>
@@ -117,7 +113,7 @@ export default function LandingPage() {
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link href="/dashboard" className="w-full sm:w-auto px-8 py-4 bg-brand-primary hover:bg-brand-primaryHover text-white font-semibold rounded-full shadow-sm flex items-center justify-center gap-2 transition-all group">
-              Get Started Free <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+              Get Started <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
             </Link>
             <a href="#demo" className="w-full sm:w-auto px-8 py-4 bg-white border border-brand-border hover:bg-brand-surface text-brand-textPrimary font-semibold rounded-full flex items-center justify-center gap-2 transition-colors">
               Book a Demo

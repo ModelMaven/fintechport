@@ -38,8 +38,8 @@ export default function DashboardLayout({
 
   const navItems = [
     { name: "Overview", href: "/dashboard", icon: LayoutDashboard },
-    { name: "New Report", href: "/dashboard/new-report", icon: FilePlus2 },
     { name: "Borrowers", href: "/dashboard/borrowers", icon: Users },
+    { name: "New Report", href: "/dashboard/new-report", icon: FilePlus2 },
     { name: "Reports", href: "/dashboard/reports", icon: FileText },
     { name: "Admin Panel", href: "/dashboard/admin", icon: ShieldAlert, adminOnly: true },
     { name: "Settings", href: "/dashboard/settings", icon: Settings }

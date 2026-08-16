@@ -177,23 +177,23 @@ export default function DashboardOverview() {
               <div className="bg-white p-6 rounded-2xl border border-brand-border shadow-sm">
                 <h3 className="font-bold text-sm text-brand-textPrimary mb-4">Quick Tools</h3>
                 <div className="space-y-3">
-                  <Link href="/dashboard/new-report" className="flex items-center justify-between p-3 border border-brand-border rounded-xl hover:bg-brand-surface transition-colors">
-                    <div className="flex items-center gap-3">
-                      <span className="p-2 bg-brand-primary/10 rounded-lg text-brand-primary"><FilePlus2 size={16} /></span>
-                      <div className="text-left">
-                        <p className="text-xs font-bold text-brand-textPrimary">Create Report</p>
-                        <p className="text-[10px] text-brand-textSecondary">15-step appraisal guide</p>
-                      </div>
-                    </div>
-                    <ArrowRight size={14} className="text-brand-textSecondary" />
-                  </Link>
-
                   <Link href="/dashboard/borrowers" className="flex items-center justify-between p-3 border border-brand-border rounded-xl hover:bg-brand-surface transition-colors">
                     <div className="flex items-center gap-3">
                       <span className="p-2 bg-brand-primary/10 rounded-lg text-brand-primary"><Users size={16} /></span>
                       <div className="text-left">
                         <p className="text-xs font-bold text-brand-textPrimary">Manage Borrowers</p>
                         <p className="text-[10px] text-brand-textSecondary">Create promoter profiles</p>
+                      </div>
+                    </div>
+                    <ArrowRight size={14} className="text-brand-textSecondary" />
+                  </Link>
+
+                  <Link href="/dashboard/new-report" className="flex items-center justify-between p-3 border border-brand-border rounded-xl hover:bg-brand-surface transition-colors">
+                    <div className="flex items-center gap-3">
+                      <span className="p-2 bg-brand-primary/10 rounded-lg text-brand-primary"><FilePlus2 size={16} /></span>
+                      <div className="text-left">
+                        <p className="text-xs font-bold text-brand-textPrimary">Create Report</p>
+                        <p className="text-[10px] text-brand-textSecondary">15-step appraisal guide</p>
                       </div>
                     </div>
                     <ArrowRight size={14} className="text-brand-textSecondary" />
