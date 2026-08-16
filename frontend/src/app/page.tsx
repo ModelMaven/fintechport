@@ -66,7 +66,6 @@ export default function LandingPage() {
             <a href="#features" className="hover:text-brand-textPrimary transition-colors">Features</a>
             <a href="#industries" className="hover:text-brand-textPrimary transition-colors">Sectors</a>
             <a href="#workflow" className="hover:text-brand-textPrimary transition-colors">Workflow</a>
-            <a href="#pricing" className="hover:text-brand-textPrimary transition-colors">Pricing</a>
             <a href="#faq" className="hover:text-brand-textPrimary transition-colors">FAQ</a>
           </nav>
 
@@ -88,7 +87,6 @@ export default function LandingPage() {
             <a href="#features" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-brand-textSecondary">Features</a>
             <a href="#industries" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-brand-textSecondary">Sectors</a>
             <a href="#workflow" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-brand-textSecondary">Workflow</a>
-            <a href="#pricing" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-brand-textSecondary">Pricing</a>
             <a href="#faq" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-brand-textSecondary">FAQ</a>
             <hr className="border-brand-border" />
             <Link href="/dashboard" className="w-full text-center py-2.5 bg-brand-primary text-white text-sm font-medium rounded-full">Get Started</Link>
@@ -300,67 +298,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Pricing Section */}
-      <section id="pricing" className="py-20 bg-brand-surface border-t border-brand-border">
-        <div className="max-w-7xl mx-auto px-6 text-center">
-          <div className="max-w-3xl mx-auto mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-brand-textPrimary mb-4">
-              Fair, usage-based plans.
-            </h2>
-            <p className="text-brand-textSecondary text-sm">
-              Upgrade as you scale report preparation pipelines.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 max-w-4xl mx-auto gap-8 text-left">
-            {/* Free */}
-            <div className="bg-white p-8 rounded-2xl border border-brand-border shadow-sm flex flex-col justify-between">
-              <div>
-                <h4 className="font-bold text-lg text-brand-textPrimary mb-2">Startup / Sandbox</h4>
-                <p className="text-brand-textSecondary text-xs mb-6">Excellent for preparing one-off proposals.</p>
-                <div className="mb-6">
-                  <span className="text-4xl font-bold text-brand-textPrimary">Rs. 0</span>
-                  <span className="text-brand-textSecondary text-sm font-medium"> / forever</span>
-                </div>
-                <hr className="border-brand-border mb-6" />
-                <ul className="space-y-3 text-xs text-brand-textSecondary mb-8">
-                  <li className="flex items-center gap-2"><CheckCircle size={14} className="text-brand-success" /> 1 Sandbox Project Report</li>
-                  <li className="flex items-center gap-2"><CheckCircle size={14} className="text-brand-success" /> Dynamic Financial calculations</li>
-                  <li className="flex items-center gap-2"><CheckCircle size={14} className="text-brand-success" /> Standard Ratio reports</li>
-                  <li className="flex items-center gap-2"><CheckCircle size={14} className="text-brand-success" /> PDF Watermarked Export</li>
-                </ul>
-              </div>
-              <Link href="/dashboard" className="w-full text-center py-3 bg-brand-surface hover:bg-brand-border text-brand-textPrimary font-semibold text-xs rounded-full border border-brand-border transition-colors">
-                Start Sandbox
-              </Link>
-            </div>
-
-            {/* Pro */}
-            <div className="bg-white p-8 rounded-2xl border-2 border-brand-primary shadow-sm flex flex-col justify-between relative">
-              <span className="absolute top-4 right-6 bg-brand-primary text-white text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded-full">POPULAR</span>
-              <div>
-                <h4 className="font-bold text-lg text-brand-textPrimary mb-2">Professional Consultant</h4>
-                <p className="text-brand-textSecondary text-xs mb-6">Designed for Accountants and Advisors.</p>
-                <div className="mb-6">
-                  <span className="text-4xl font-bold text-brand-textPrimary">Rs. 9,999</span>
-                  <span className="text-brand-textSecondary text-sm font-medium"> / month</span>
-                </div>
-                <hr className="border-brand-border mb-6" />
-                <ul className="space-y-3 text-xs text-brand-textSecondary mb-8">
-                  <li className="flex items-center gap-2"><CheckCircle size={14} className="text-brand-primary" /> Unlimited Reports generation</li>
-                  <li className="flex items-center gap-2"><CheckCircle size={14} className="text-brand-primary" /> Full Document AI OCR imports</li>
-                  <li className="flex items-center gap-2"><CheckCircle size={14} className="text-brand-primary" /> Multi-scenario sensitivity reports</li>
-                  <li className="flex items-center gap-2"><CheckCircle size={14} className="text-brand-primary" /> High-quality Editable Word & PDF exports</li>
-                  <li className="flex items-center gap-2"><CheckCircle size={14} className="text-brand-primary" /> Custom corporate branding</li>
-                </ul>
-              </div>
-              <Link href="/dashboard" className="w-full text-center py-3 bg-brand-primary hover:bg-brand-primaryHover text-white font-semibold text-xs rounded-full transition-colors">
-                Get Started Pro
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* FAQ */}
       <section id="faq" className="py-20 bg-white">
