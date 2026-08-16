@@ -32,7 +32,7 @@ export default function BorrowersPage() {
   
   // Promoter details list
   const [promoters, setPromoters] = useState<any[]>([
-    { name: "", age: 45, equity_percentage: 100, net_worth: 10000000.00 }
+    { name: "", age: 45, equity_percentage: 100, net_worth: 0.00 }
   ]);
 
   const loadData = () => {
@@ -53,7 +53,7 @@ export default function BorrowersPage() {
   }, []);
 
   const addPromoterRow = () => {
-    setPromoters([...promoters, { name: "", age: 40, equity_percentage: 0, net_worth: 5000000.00 }]);
+    setPromoters([...promoters, { name: "", age: 40, equity_percentage: 0, net_worth: 0.00 }]);
   };
 
   const removePromoterRow = (index: number) => {
@@ -299,6 +299,14 @@ export default function BorrowersPage() {
                   </button>
                 </div>
 
+                {/* Column Headers (Desktop only) */}
+                <div className="hidden md:flex items-center gap-3 px-3 mb-2 text-brand-textSecondary font-bold text-[10px] uppercase tracking-wider">
+                  <div className="flex-1">Name</div>
+                  <div className="w-20">Age</div>
+                  <div className="w-28">Equity Percentage</div>
+                  <div className="w-10"></div> {/* spacer for remove button */}
+                </div>
+
                 <div className="space-y-3">
                   {promoters.map((p, idx) => (
                     <div key={idx} className="flex flex-col md:flex-row items-center gap-3 p-3 bg-brand-surface border border-brand-border rounded-xl">
@@ -329,16 +337,6 @@ export default function BorrowersPage() {
                           value={p.equity_percentage}
                           onChange={(e) => updatePromoter(idx, "equity_percentage", Number(e.target.value))}
                           placeholder="Equity %"
-                          className="w-full p-2 border border-brand-border rounded-lg bg-white outline-none"
-                        />
-                      </div>
-                      <div className="w-full md:w-32">
-                        <input 
-                          type="number" 
-                          required
-                          value={p.net_worth}
-                          onChange={(e) => updatePromoter(idx, "net_worth", Number(e.target.value))}
-                          placeholder="Net Worth (INR)"
                           className="w-full p-2 border border-brand-border rounded-lg bg-white outline-none"
                         />
                       </div>
