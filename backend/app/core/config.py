@@ -11,6 +11,7 @@ class Settings(BaseSettings):
     ENVIRONMENT: str = os.getenv("ENVIRONMENT", "development")
     CLERK_API_KEY: str = os.getenv("CLERK_API_KEY", "mock_clerk_key")
     OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY", "mock_openai_key")
+    GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")
     GOOGLE_DOC_AI_KEY: str = os.getenv("GOOGLE_DOC_AI_KEY", "mock_doc_ai_key")
 
     class Config:

@@ -1,25 +1,29 @@
 import json
 import logging
+import httpx
 from typing import Dict, Any, Optional
-from openai import OpenAI
 from app.core.config import settings
 
 logger = logging.getLogger(__name__)
 
 class AIService:
     def __init__(self):
-        self.client = None
-        if settings.OPENAI_API_KEY and settings.OPENAI_API_KEY != "mock_openai_key":
-            try:
-                self.client = OpenAI(api_key=settings.OPENAI_API_KEY)
-            except Exception as e:
-                logger.error(f"Failed to initialize OpenAI client: {e}")
+        # Retrieve key from environment variable directly or fallback to config settings
+        self.api_key = settings.GEMINI_API_KEY
+        if not self.api_key and settings.OPENAI_API_KEY and settings.OPENAI_API_KEY != "mock_openai_key":
+            self.api_key = settings.OPENAI_API_KEY
+            
+        if self.api_key:
+            logger.info("AIService initialized with Gemini API Key")
+        else:
+            logger.warning("AIService initialized without API Key, using mock data")
 
     def generate_report_section(self, section_name: str, borrower_info: Dict[str, Any], project_info: Dict[str, Any], financial_info: Optional[Dict[str, Any]] = None) -> str:
         """
-        Generates narrative paragraphs for a given report section.
+        Generates narrative paragraphs for a given report section using Gemini API.
+        Enables Google Search Grounding to fetch live market and industry data.
         """
-        if not self.client:
+        if not self.api_key:
             return self._generate_mock_section(section_name, borrower_info, project_info, financial_info)
 
         prompt = f"""
@@ -44,18 +48,43 @@ class AIService:
         - Output the section directly as structured text or markdown.
         """
 
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={self.api_key}"
+        headers = {"Content-Type": "application/json"}
+        payload = {
+            "contents": [
+                {
+                    "parts": [
+                        {"text": prompt}
+                    ]
+                }
+            ],
+            "tools": [
+                {"googleSearch": {}}
+            ],
+            "generationConfig": {
+                "temperature": 0.2
+            }
+        }
+
         try:
-            response = self.client.chat.completions.create(
-                model="gpt-4-turbo",  # fall back to current stable model
-                messages=[
-                    {"role": "system", "content": "You are a financial consultant specializing in bank loan credit proposals."},
-                    {"role": "user", "content": prompt}
-                ],
-                temperature=0.2
-            )
-            return response.choices[0].message.content or ""
+            with httpx.Client(timeout=45.0) as client:
+                response = client.post(url, headers=headers, json=payload)
+                if response.status_code == 200:
+                    res_json = response.json()
+                    candidates = res_json.get("candidates", [])
+                    if candidates:
+                        content_obj = candidates[0].get("content", {})
+                        parts = content_obj.get("parts", [])
+                        if parts:
+                            return parts[0].get("text", "")
+                    
+                    logger.error(f"Gemini response structure mismatch: {response.text}")
+                else:
+                    logger.error(f"Gemini API returned error status {response.status_code}: {response.text}")
+            
+            return self._generate_mock_section(section_name, borrower_info, project_info, financial_info)
         except Exception as e:
-            logger.error(f"OpenAI error during {section_name} generation: {e}")
+            logger.error(f"Gemini API error during {section_name} generation: {e}")
             return self._generate_mock_section(section_name, borrower_info, project_info, financial_info)
 
     def _generate_mock_section(self, section: str, borrower: Dict[str, Any], project: Dict[str, Any], financials: Optional[Dict[str, Any]]) -> str:

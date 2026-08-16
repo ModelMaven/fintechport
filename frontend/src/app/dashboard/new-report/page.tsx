@@ -22,10 +22,15 @@ import {
 
 export default function NewReportWizard() {
   const router = useRouter();
+  const [mounted, setMounted] = useState(false);
   const [step, setStep] = useState(1);
   const [borrowers, setBorrowers] = useState<any[]>([]);
   const [selectedBorrowerId, setSelectedBorrowerId] = useState("");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Wizard global form states (aggregated into a single object)
   const [formData, setFormData] = useState({
@@ -284,6 +289,8 @@ export default function NewReportWizard() {
       setLoading(false);
     }
   };
+
+  if (!mounted) return null;
 
   return (
     <div className="flex flex-col lg:flex-row gap-8 items-start text-xs">

@@ -46,7 +46,22 @@ export default function ReportPreviewPage() {
     financial_current_ratio: "",
     financial_quick_ratio: "",
     financial_debt_equity: "",
-    financial_dscr: ""
+    financial_dscr: "",
+    toc_item_1: "",
+    toc_item_2: "",
+    toc_item_3: "",
+    toc_item_4: "",
+    toc_item_5: "",
+    toc_item_6: "",
+    toc_item_7: "",
+    header_executive_summary: "",
+    header_borrower_profile: "",
+    header_industry_analysis: "",
+    header_swot_analysis: "",
+    header_project_feasibility: "",
+    header_financials: "",
+    header_risk_analysis: "",
+    header_recommendation: ""
   });
 
   const previewRef = useRef<HTMLDivElement>(null);
@@ -73,6 +88,21 @@ export default function ReportPreviewPage() {
             financial_quick_ratio: res.report_data.financials?.quick_ratio || "1.00",
             financial_debt_equity: res.report_data.financials?.debt_equity || "1.20",
             financial_dscr: res.report_data.financials?.dscr || "1.85",
+            toc_item_1: res.report_data.toc?.item_1 || "1. Executive Summary",
+            toc_item_2: res.report_data.toc?.item_2 || "2. Borrower Profile & Organization",
+            toc_item_3: res.report_data.toc?.item_3 || "3. Industry Assessment",
+            toc_item_4: res.report_data.toc?.item_4 || "4. SWOT Matrix",
+            toc_item_5: res.report_data.toc?.item_5 || "5. Project Feasibility",
+            toc_item_6: res.report_data.toc?.item_6 || "6. Financial appraisal & Covenants",
+            toc_item_7: res.report_data.toc?.item_7 || "7. Security Details & Recommendation",
+            header_executive_summary: res.report_data.headers?.executive_summary || "1. Executive Summary",
+            header_borrower_profile: res.report_data.headers?.borrower_profile || "2. Borrower Profile",
+            header_industry_analysis: res.report_data.headers?.industry_analysis || "3. Industry Analysis",
+            header_swot_analysis: res.report_data.headers?.swot_analysis || "4. SWOT Analysis",
+            header_project_feasibility: res.report_data.headers?.project_feasibility || "5. Project Feasibility",
+            header_financials: res.report_data.headers?.financials || "6. Financial Appraisal & Ratios",
+            header_risk_analysis: res.report_data.headers?.risk_analysis || "7. Risk analysis & Mitigations",
+            header_recommendation: res.report_data.headers?.recommendation || "8. Bank Recommendation"
           });
         }
         if (res.status === "Generating" || res.status === "Draft") {
@@ -131,6 +161,25 @@ export default function ReportPreviewPage() {
           quick_ratio: editData.financial_quick_ratio,
           debt_equity: editData.financial_debt_equity,
           dscr: editData.financial_dscr
+        },
+        toc: {
+          item_1: editData.toc_item_1,
+          item_2: editData.toc_item_2,
+          item_3: editData.toc_item_3,
+          item_4: editData.toc_item_4,
+          item_5: editData.toc_item_5,
+          item_6: editData.toc_item_6,
+          item_7: editData.toc_item_7
+        },
+        headers: {
+          executive_summary: editData.header_executive_summary,
+          borrower_profile: editData.header_borrower_profile,
+          industry_analysis: editData.header_industry_analysis,
+          swot_analysis: editData.header_swot_analysis,
+          project_feasibility: editData.header_project_feasibility,
+          financials: editData.header_financials,
+          risk_analysis: editData.header_risk_analysis,
+          recommendation: editData.header_recommendation
         }
       }
     };
@@ -337,21 +386,115 @@ export default function ReportPreviewPage() {
               <div id="toc" className="space-y-6 pt-8 border-b border-brand-border/40 pb-12">
                 <h2 className="text-base font-bold text-brand-textPrimary border-b border-brand-border pb-2">Table of Contents</h2>
                 <div className="space-y-3 font-semibold text-brand-textSecondary pl-2">
-                  <p className="flex justify-between"><span>1. Executive Summary</span> <span>Page 3</span></p>
-                  <p className="flex justify-between"><span>2. Borrower Profile & Organization</span> <span>Page 4</span></p>
-                  <p className="flex justify-between"><span>3. Industry Assessment</span> <span>Page 5</span></p>
-                  <p className="flex justify-between"><span>4. SWOT Matrix</span> <span>Page 6</span></p>
-                  <p className="flex justify-between"><span>5. Project Feasibility</span> <span>Page 7</span></p>
-                  <p className="flex justify-between"><span>6. Financial appraisal & Covenants</span> <span>Page 8</span></p>
-                  <p className="flex justify-between"><span>7. Security Details & Recommendation</span> <span>Page 9</span></p>
+                  <p className="flex justify-between items-center">
+                    {isEditing ? (
+                      <input 
+                        type="text" 
+                        value={editData.toc_item_1}
+                        onChange={(e) => setEditData({ ...editData, toc_item_1: e.target.value })}
+                        className="w-full max-w-lg p-1 border border-brand-border rounded bg-brand-surface outline-none text-[11px]"
+                      />
+                    ) : (
+                      <span>{report?.report_data?.toc?.item_1 || "1. Executive Summary"}</span>
+                    )}
+                    <span>Page 3</span>
+                  </p>
+                  <p className="flex justify-between items-center">
+                    {isEditing ? (
+                      <input 
+                        type="text" 
+                        value={editData.toc_item_2}
+                        onChange={(e) => setEditData({ ...editData, toc_item_2: e.target.value })}
+                        className="w-full max-w-lg p-1 border border-brand-border rounded bg-brand-surface outline-none text-[11px]"
+                      />
+                    ) : (
+                      <span>{report?.report_data?.toc?.item_2 || "2. Borrower Profile & Organization"}</span>
+                    )}
+                    <span>Page 4</span>
+                  </p>
+                  <p className="flex justify-between items-center">
+                    {isEditing ? (
+                      <input 
+                        type="text" 
+                        value={editData.toc_item_3}
+                        onChange={(e) => setEditData({ ...editData, toc_item_3: e.target.value })}
+                        className="w-full max-w-lg p-1 border border-brand-border rounded bg-brand-surface outline-none text-[11px]"
+                      />
+                    ) : (
+                      <span>{report?.report_data?.toc?.item_3 || "3. Industry Assessment"}</span>
+                    )}
+                    <span>Page 5</span>
+                  </p>
+                  <p className="flex justify-between items-center">
+                    {isEditing ? (
+                      <input 
+                        type="text" 
+                        value={editData.toc_item_4}
+                        onChange={(e) => setEditData({ ...editData, toc_item_4: e.target.value })}
+                        className="w-full max-w-lg p-1 border border-brand-border rounded bg-brand-surface outline-none text-[11px]"
+                      />
+                    ) : (
+                      <span>{report?.report_data?.toc?.item_4 || "4. SWOT Matrix"}</span>
+                    )}
+                    <span>Page 6</span>
+                  </p>
+                  <p className="flex justify-between items-center">
+                    {isEditing ? (
+                      <input 
+                        type="text" 
+                        value={editData.toc_item_5}
+                        onChange={(e) => setEditData({ ...editData, toc_item_5: e.target.value })}
+                        className="w-full max-w-lg p-1 border border-brand-border rounded bg-brand-surface outline-none text-[11px]"
+                      />
+                    ) : (
+                      <span>{report?.report_data?.toc?.item_5 || "5. Project Feasibility"}</span>
+                    )}
+                    <span>Page 7</span>
+                  </p>
+                  <p className="flex justify-between items-center">
+                    {isEditing ? (
+                      <input 
+                        type="text" 
+                        value={editData.toc_item_6}
+                        onChange={(e) => setEditData({ ...editData, toc_item_6: e.target.value })}
+                        className="w-full max-w-lg p-1 border border-brand-border rounded bg-brand-surface outline-none text-[11px]"
+                      />
+                    ) : (
+                      <span>{report?.report_data?.toc?.item_6 || "6. Financial appraisal & Covenants"}</span>
+                    )}
+                    <span>Page 8</span>
+                  </p>
+                  <p className="flex justify-between items-center">
+                    {isEditing ? (
+                      <input 
+                        type="text" 
+                        value={editData.toc_item_7}
+                        onChange={(e) => setEditData({ ...editData, toc_item_7: e.target.value })}
+                        className="w-full max-w-lg p-1 border border-brand-border rounded bg-brand-surface outline-none text-[11px]"
+                      />
+                    ) : (
+                      <span>{report?.report_data?.toc?.item_7 || "7. Security Details & Recommendation"}</span>
+                    )}
+                    <span>Page 9</span>
+                  </p>
                 </div>
               </div>
 
+
               {/* Executive Summary */}
               <div id="executive_summary" className="space-y-4 pt-8 border-b border-brand-border/40 pb-12">
-                <h2 className="text-base font-bold text-brand-textPrimary flex justify-between items-center border-b border-brand-border pb-2">
-                  1. Executive Summary
-                  {isEditing && <span className="text-[10px] font-bold text-brand-primary">Editable Section</span>}
+                <h2 className="text-base font-bold text-brand-textPrimary flex justify-between items-center border-b border-brand-border pb-2 gap-4">
+                  {isEditing ? (
+                    <input 
+                      type="text" 
+                      value={editData.header_executive_summary}
+                      onChange={(e) => setEditData({ ...editData, header_executive_summary: e.target.value })}
+                      className="w-full max-w-md p-1 border border-brand-border rounded bg-brand-surface outline-none font-bold text-sm"
+                    />
+                  ) : (
+                    <span>{report?.report_data?.headers?.executive_summary || "1. Executive Summary"}</span>
+                  )}
+                  {isEditing && <span className="text-[10px] font-bold text-brand-primary flex-shrink-0">Editable Section</span>}
                 </h2>
                 {isEditing ? (
                   <textarea
@@ -367,7 +510,18 @@ export default function ReportPreviewPage() {
 
               {/* Borrower Profile */}
               <div id="borrower_profile" className="space-y-4 pt-8 border-b border-brand-border/40 pb-12">
-                <h2 className="text-base font-bold text-brand-textPrimary border-b border-brand-border pb-2">2. Borrower Profile</h2>
+                <h2 className="text-base font-bold text-brand-textPrimary border-b border-brand-border pb-2">
+                  {isEditing ? (
+                    <input 
+                      type="text" 
+                      value={editData.header_borrower_profile}
+                      onChange={(e) => setEditData({ ...editData, header_borrower_profile: e.target.value })}
+                      className="w-full max-w-md p-1 border border-brand-border rounded bg-brand-surface outline-none font-bold text-sm"
+                    />
+                  ) : (
+                    report?.report_data?.headers?.borrower_profile || "2. Borrower Profile"
+                  )}
+                </h2>
                 {isEditing ? (
                   <textarea
                     value={editData.borrower_profile}
@@ -382,7 +536,18 @@ export default function ReportPreviewPage() {
 
               {/* Industry Analysis */}
               <div id="industry_analysis" className="space-y-4 pt-8 border-b border-brand-border/40 pb-12">
-                <h2 className="text-base font-bold text-brand-textPrimary border-b border-brand-border pb-2">3. Industry Analysis</h2>
+                <h2 className="text-base font-bold text-brand-textPrimary border-b border-brand-border pb-2">
+                  {isEditing ? (
+                    <input 
+                      type="text" 
+                      value={editData.header_industry_analysis}
+                      onChange={(e) => setEditData({ ...editData, header_industry_analysis: e.target.value })}
+                      className="w-full max-w-md p-1 border border-brand-border rounded bg-brand-surface outline-none font-bold text-sm"
+                    />
+                  ) : (
+                    report?.report_data?.headers?.industry_analysis || "3. Industry Analysis"
+                  )}
+                </h2>
                 {isEditing ? (
                   <textarea
                     value={editData.industry_analysis}
@@ -397,7 +562,18 @@ export default function ReportPreviewPage() {
 
               {/* SWOT Analysis */}
               <div id="swot_analysis" className="space-y-4 pt-8 border-b border-brand-border/40 pb-12">
-                <h2 className="text-base font-bold text-brand-textPrimary border-b border-brand-border pb-2">4. SWOT Analysis</h2>
+                <h2 className="text-base font-bold text-brand-textPrimary border-b border-brand-border pb-2">
+                  {isEditing ? (
+                    <input 
+                      type="text" 
+                      value={editData.header_swot_analysis}
+                      onChange={(e) => setEditData({ ...editData, header_swot_analysis: e.target.value })}
+                      className="w-full max-w-md p-1 border border-brand-border rounded bg-brand-surface outline-none font-bold text-sm"
+                    />
+                  ) : (
+                    report?.report_data?.headers?.swot_analysis || "4. SWOT Analysis"
+                  )}
+                </h2>
                 {isEditing ? (
                   <textarea
                     value={editData.swot_analysis}
@@ -412,7 +588,18 @@ export default function ReportPreviewPage() {
 
               {/* Project Feasibility */}
               <div id="project_feasibility" className="space-y-4 pt-8 border-b border-brand-border/40 pb-12">
-                <h2 className="text-base font-bold text-brand-textPrimary border-b border-brand-border pb-2">5. Project Feasibility</h2>
+                <h2 className="text-base font-bold text-brand-textPrimary border-b border-brand-border pb-2">
+                  {isEditing ? (
+                    <input 
+                      type="text" 
+                      value={editData.header_project_feasibility}
+                      onChange={(e) => setEditData({ ...editData, header_project_feasibility: e.target.value })}
+                      className="w-full max-w-md p-1 border border-brand-border rounded bg-brand-surface outline-none font-bold text-sm"
+                    />
+                  ) : (
+                    report?.report_data?.headers?.project_feasibility || "5. Project Feasibility"
+                  )}
+                </h2>
                 {isEditing ? (
                   <textarea
                     value={editData.project_feasibility}
@@ -427,7 +614,18 @@ export default function ReportPreviewPage() {
 
               {/* Financials & Ratio Tables */}
               <div id="financials" className="space-y-6 pt-8 border-b border-brand-border/40 pb-12">
-                <h2 className="text-base font-bold text-brand-textPrimary border-b border-brand-border pb-2">6. Financial Appraisal & Ratios</h2>
+                <h2 className="text-base font-bold text-brand-textPrimary border-b border-brand-border pb-2">
+                  {isEditing ? (
+                    <input 
+                      type="text" 
+                      value={editData.header_financials}
+                      onChange={(e) => setEditData({ ...editData, header_financials: e.target.value })}
+                      className="w-full max-w-md p-1 border border-brand-border rounded bg-brand-surface outline-none font-bold text-sm"
+                    />
+                  ) : (
+                    report?.report_data?.headers?.financials || "6. Financial Appraisal & Ratios"
+                  )}
+                </h2>
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs border border-brand-border">
                     <thead>
@@ -509,7 +707,18 @@ export default function ReportPreviewPage() {
 
               {/* Risk Analysis */}
               <div id="risk_analysis" className="space-y-4 pt-8 border-b border-brand-border/40 pb-12">
-                <h2 className="text-base font-bold text-brand-textPrimary border-b border-brand-border pb-2">7. Risk analysis & Mitigations</h2>
+                <h2 className="text-base font-bold text-brand-textPrimary border-b border-brand-border pb-2">
+                  {isEditing ? (
+                    <input 
+                      type="text" 
+                      value={editData.header_risk_analysis}
+                      onChange={(e) => setEditData({ ...editData, header_risk_analysis: e.target.value })}
+                      className="w-full max-w-md p-1 border border-brand-border rounded bg-brand-surface outline-none font-bold text-sm"
+                    />
+                  ) : (
+                    report?.report_data?.headers?.risk_analysis || "7. Risk analysis & Mitigations"
+                  )}
+                </h2>
                 {isEditing ? (
                   <textarea
                     value={editData.risk_analysis}
@@ -524,7 +733,18 @@ export default function ReportPreviewPage() {
 
               {/* Recommendation */}
               <div id="recommendation" className="space-y-4 pt-8">
-                <h2 className="text-base font-bold text-brand-textPrimary border-b border-brand-border pb-2">8. Bank Recommendation</h2>
+                <h2 className="text-base font-bold text-brand-textPrimary border-b border-brand-border pb-2">
+                  {isEditing ? (
+                    <input 
+                      type="text" 
+                      value={editData.header_recommendation}
+                      onChange={(e) => setEditData({ ...editData, header_recommendation: e.target.value })}
+                      className="w-full max-w-md p-1 border border-brand-border rounded bg-brand-surface outline-none font-bold text-sm"
+                    />
+                  ) : (
+                    report?.report_data?.headers?.recommendation || "8. Bank Recommendation"
+                  )}
+                </h2>
                 {isEditing ? (
                   <textarea
                     value={editData.recommendation}
