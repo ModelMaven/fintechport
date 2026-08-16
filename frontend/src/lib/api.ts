@@ -1,6 +1,15 @@
-const API_BASE_URL = typeof window !== 'undefined' 
-  ? (window.location.hostname === 'localhost' ? 'http://localhost:8000/api/v1' : '/api/v1')
-  : 'http://backend:8000/api/v1';
+const getApiBaseUrl = () => {
+  if (process.env.NEXT_PUBLIC_API_URL) {
+    const url = process.env.NEXT_PUBLIC_API_URL.replace(/\/$/, '');
+    return `${url}/api/v1`;
+  }
+  if (typeof window !== 'undefined') {
+    return window.location.hostname === 'localhost' ? 'http://localhost:8000/api/v1' : '/api/v1';
+  }
+  return 'http://backend:8000/api/v1';
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 async function request(path: string, options: RequestInit = {}) {
   const headers = new Headers(options.headers);
