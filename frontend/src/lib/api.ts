@@ -79,6 +79,10 @@ export const api = {
     method: 'POST',
     body: JSON.stringify(data),
   }),
+  autofillProposal: (companyName: string, prompt: string) => request('/calc/autofill', {
+    method: 'POST',
+    body: JSON.stringify({ company_name: companyName, prompt }),
+  }),
 
   // OCR
   uploadDocument: (projectId: string, docType: string, file: File) => {

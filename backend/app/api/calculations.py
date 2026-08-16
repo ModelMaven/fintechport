@@ -59,3 +59,18 @@ def get_sensitivity_analysis(payload: SensitivityRequest):
         npv_10=res["npv_10"],
         npv_12=res["npv_12"]
     )
+
+from pydantic import BaseModel
+from app.services.ai_service import ai_service
+
+class AutofillRequest(BaseModel):
+    company_name: str
+    prompt: str
+
+@router.post("/autofill")
+def autofill_proposal_data(payload: AutofillRequest):
+    """
+    Scrapes the web via Gemini AI to populate 15 steps of credit parameters.
+    """
+    data = ai_service.autofill_proposal(payload.company_name, payload.prompt)
+    return data

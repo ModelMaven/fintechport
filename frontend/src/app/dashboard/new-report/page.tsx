@@ -17,7 +17,8 @@ import {
   UploadCloud,
   FileCheck,
   Plus,
-  Trash2
+  Trash2,
+  Loader2
 } from "lucide-react";
 
 export default function NewReportWizard() {
@@ -27,10 +28,39 @@ export default function NewReportWizard() {
   const [borrowers, setBorrowers] = useState<any[]>([]);
   const [selectedBorrowerId, setSelectedBorrowerId] = useState("");
   const [loading, setLoading] = useState(false);
+  const [aiCompanyName, setAiCompanyName] = useState("");
+  const [aiPrompt, setAiPrompt] = useState("");
+  const [aiLoading, setAiLoading] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  const handleAiAutofill = async () => {
+    if (!aiCompanyName) return;
+    setAiLoading(true);
+    try {
+      const data = await api.autofillProposal(aiCompanyName, aiPrompt);
+      if (data && Object.keys(data).length > 0) {
+        setFormData(prev => ({
+          ...prev,
+          ...data,
+          promoter_details: data.promoter_details || prev.promoter_details,
+          completed_projects: data.completed_projects || prev.completed_projects,
+          ongoing_projects: data.ongoing_projects || prev.ongoing_projects,
+          financial_years: data.financial_years || prev.financial_years,
+          projected_years: data.projected_years || prev.projected_years
+        }));
+        alert("Success! All 15 wizard steps have been autofilled by Gemini AI with live web details.");
+      } else {
+        alert("Gemini AI was unable to generate autofill structured data. Please try again with a clearer company name.");
+      }
+    } catch (err) {
+      alert("Autofill failed: " + err);
+    } finally {
+      setAiLoading(false);
+    }
+  };
 
   // Wizard global form states (aggregated into a single object)
   const [formData, setFormData] = useState({
@@ -340,6 +370,42 @@ export default function NewReportWizard() {
           </div>
           <div className="flex items-center gap-1.5 px-3 py-1 bg-brand-surface rounded-full border border-brand-border text-[10px] font-bold text-brand-textSecondary">
             <Sparkles size={11} className="text-brand-primary" /> Auto-Saving
+          </div>
+        </div>
+
+        {/* Gemini AI Autofill Assistant card */}
+        <div className="bg-brand-primary/5 border border-brand-primary/20 rounded-2xl p-5 mb-6">
+          <div className="flex items-center gap-2 mb-2">
+            <Sparkles size={16} className="text-brand-primary" />
+            <h4 className="font-bold text-xs text-brand-primary">Gemini Web Grounding Autofill</h4>
+          </div>
+          <p className="text-[10px] text-brand-textSecondary mb-3">
+            Enter a company name and a project description prompt. Gemini will scan the web and autofill all 15 wizard steps automatically!
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <input 
+              type="text"
+              placeholder="Company Name (e.g. Reliance Industries, Acme Corp)"
+              value={aiCompanyName}
+              onChange={(e) => setAiCompanyName(e.target.value)}
+              className="flex-1 p-2 border border-brand-border rounded-lg bg-white outline-none"
+            />
+            <input 
+              type="text"
+              placeholder="Context / Prompt (e.g. expanding plant with 5 Cr loan)"
+              value={aiPrompt}
+              onChange={(e) => setAiPrompt(e.target.value)}
+              className="flex-[2] p-2 border border-brand-border rounded-lg bg-white outline-none"
+            />
+            <button
+              type="button"
+              onClick={handleAiAutofill}
+              disabled={aiLoading || !aiCompanyName}
+              className="px-5 py-2 bg-brand-primary hover:bg-brand-primaryHover text-white font-bold rounded-lg flex items-center justify-center gap-1.5 transition-colors disabled:opacity-50"
+            >
+              {aiLoading ? <Loader2 size={12} className="animate-spin" /> : <Sparkles size={12} />}
+              {aiLoading ? "Fetching..." : "Autofill"}
+            </button>
           </div>
         </div>
 

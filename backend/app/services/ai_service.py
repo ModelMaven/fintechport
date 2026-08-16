@@ -187,4 +187,165 @@ We recommend the sanction of the following credit facilities for **{company}**'s
 
         return mock_data.get(section, f"### {section}\n\nComprehensive assessment regarding {company}'s project proposal in the {industry} sector. Detailed notes will be generated upon full API integration.")
 
+    def autofill_proposal(self, company_name: str, user_prompt: str) -> Dict[str, Any]:
+        """
+        Uses Gemini API with Google Search Grounding to automatically fetch data from the internet
+        and construct a completed 15-step proposal JSON payload.
+        """
+        if not self.api_key:
+            return {
+                "company_name": company_name,
+                "constitution": "Private Limited Company",
+                "industry": "Manufacturing",
+                "reg_number": "U74999DL2024PTC123456",
+                "inc_date": "2024-01-01",
+                "promoter_details": [{"name": "Promoter A", "age": 45, "equity_percentage": 100, "net_worth": 0.0}],
+                "business_overview": "Mocked Business overview generated from default prompt.",
+                "market_share": "10%",
+                "major_customers": "Standard local buyers",
+                "completed_projects": [{"name": "Phase I Expansion", "cost": "2.5 Cr", "year": "2023"}],
+                "ongoing_projects": [],
+                "proposed_project_name": "Proposed Greenfield Project",
+                "proposed_project_type": "Manufacturing",
+                "proposed_location": "Industrial Area, Phase 2",
+                "proposed_capacity": "5000 units/day",
+                "total_project_cost": 100000000.0,
+                "term_loan_required": 70000000.0,
+                "promoter_equity": 30000000.0,
+                "working_capital_required": 15000000.0,
+                "land_cost": 25000000.0,
+                "building_cost": 35000000.0,
+                "machinery_cost": 40000000.0,
+                "contingency_cost": 0.0,
+                "current_assets": 30000000.0,
+                "current_liabilities": 20000000.0,
+                "projected_turnover": 120000000.0,
+                "financial_years": [
+                    {"year": "2023", "revenue": 80000000.0, "net_profit": 5000000.0},
+                    {"year": "2024", "revenue": 95000000.0, "net_profit": 6500000.0},
+                    {"year": "2025", "revenue": 110000000.0, "net_profit": 8000000.0}
+                ],
+                "projected_years": [
+                    {"year": "2026", "revenue": 130000000.0, "net_profit": 11000000.0},
+                    {"year": "2027", "revenue": 155000000.0, "net_profit": 14000000.0}
+                ],
+                "repayment_tenure_months": 84,
+                "moratorium_months": 12,
+                "interest_rate_pct": 10.5,
+                "primary_security": "Hypothecation of plant and machinery",
+                "collateral_security": "Charge over factory land and building",
+                "guarantees": "Personal guarantees of the promoters"
+            }
+
+        prompt = f"""
+        Search the web and gather information about the company: "{company_name}"
+        Context/Additional Prompt: {user_prompt}
+        
+        Generate a complete credit proposal data set for this company matching this JSON structure:
+        {{
+            "company_name": "...",
+            "constitution": "Private Limited Company" (or "Public Limited Company", "Limited Liability Partnership (LLP)", "Proprietorship", "Partnership Firm"),
+            "industry": "Manufacturing" (or "Real Estate Development", "Healthcare & Hospitals", "Hotel & Hospitality", "Solar Energy IPP", "Logistics & Warehouse"),
+            "reg_number": "...",
+            "inc_date": "YYYY-MM-DD",
+            "promoter_details": [
+                {{
+                    "name": "...",
+                    "age": 45,
+                    "equity_percentage": 100,
+                    "net_worth": 0.0
+                }}
+            ],
+            "business_overview": "...",
+            "market_share": "...",
+            "major_customers": "...",
+            "completed_projects": [
+                {{
+                    "name": "...",
+                    "cost": "... Cr",
+                    "year": "..."
+                }}
+            ],
+            "ongoing_projects": [
+                {{
+                    "name": "...",
+                    "cost": "... Cr",
+                    "status": "..."
+                }}
+            ],
+            "proposed_project_name": "...",
+            "proposed_project_type": "Manufacturing" (or other list types),
+            "proposed_location": "...",
+            "proposed_capacity": "...",
+            "total_project_cost": 125000000.0,
+            "term_loan_required": 80000000.0,
+            "promoter_equity": 45000000.0,
+            "working_capital_required": 20000000.0,
+            "land_cost": 30000000.0,
+            "building_cost": 40000000.0,
+            "machinery_cost": 50000000.0,
+            "contingency_cost": 5000000.0,
+            "current_assets": 40000000.0,
+            "current_liabilities": 25000000.0,
+            "projected_turnover": 150000000.0,
+            "financial_years": [
+                {{"year": "2023", "revenue": 100000000.0, "net_profit": 8000000.0}},
+                {{"year": "2024", "revenue": 120000000.0, "net_profit": 10000000.0}},
+                {{"year": "2025", "revenue": 140000000.0, "net_profit": 12000000.0}}
+            ],
+            "projected_years": [
+                {{"year": "2026", "revenue": 160000000.0, "net_profit": 15000000.0}},
+                {{"year": "2027", "revenue": 190000000.0, "net_profit": 18000000.0}}
+            ],
+            "repayment_tenure_months": 84,
+            "moratorium_months": 12,
+            "interest_rate_pct": 10.5,
+            "primary_security": "...",
+            "collateral_security": "...",
+            "guarantees": "..."
+        }}
+        
+        Return ONLY valid JSON. Do not include markdown formatting or backticks like ```json.
+        """
+
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={self.api_key}"
+        headers = {"Content-Type": "application/json"}
+        payload = {
+            "contents": [
+                {
+                    "parts": [
+                        {"text": prompt}
+                    ]
+                }
+            ],
+            "tools": [
+                {"googleSearch": {}}
+            ],
+            "generationConfig": {
+                "temperature": 0.2,
+                "responseMimeType": "application/json"
+            }
+        }
+
+        try:
+            with httpx.Client(timeout=45.0) as client:
+                response = client.post(url, headers=headers, json=payload)
+                if response.status_code == 200:
+                    res_json = response.json()
+                    candidates = res_json.get("candidates", [])
+                    if candidates:
+                        content_obj = candidates[0].get("content", {})
+                        parts = content_obj.get("parts", [])
+                        if parts:
+                            txt = parts[0].get("text", "").strip()
+                            if txt.startswith("```"):
+                                txt = txt.split("```")[1]
+                                if txt.startswith("json"):
+                                    txt = txt[4:]
+                            return json.loads(txt.strip())
+            return {}
+        except Exception as e:
+            logger.error(f"Gemini autofill API error: {e}")
+            return {}
+
 ai_service = AIService()
