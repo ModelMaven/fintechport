@@ -6,7 +6,7 @@ from uuid import UUID
 from app.core.database import get_db
 from app.api.deps import get_current_user
 from app.models.models import Report, Project, User
-from app.schemas.schemas import ReportCreate, ReportResponse, ReportGenerateRequest
+from app.schemas.schemas import ReportCreate, ReportResponse, ReportGenerateRequest, ReportUpdate
 from app.tasks.tasks import report_generation_task
 from app.services.report_generator import DocumentGeneratorService
 
@@ -109,3 +109,26 @@ def export_report_pdf(
         media_type="application/pdf",
         headers={"Content-Disposition": f"attachment; filename={report.report_name.replace(' ', '_')}.pdf"}
     )
+
+@router.put("/{report_id}", response_model=ReportResponse)
+def update_report(
+    report_id: UUID,
+    payload: ReportUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    report = db.query(Report).filter(Report.id == report_id).first()
+    if not report:
+        raise HTTPException(status_code=404, detail="Report not found")
+    
+    if payload.report_name is not None:
+        report.report_name = payload.report_name
+    if payload.report_data is not None:
+        # Merge changes into JSON report_data
+        current_data = dict(report.report_data) if report.report_data else {}
+        current_data.update(payload.report_data)
+        report.report_data = current_data
+        
+    db.commit()
+    db.refresh(report)
+    return report

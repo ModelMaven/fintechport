@@ -91,6 +91,10 @@ export const api = {
     method: 'POST',
     body: JSON.stringify(data),
   }),
+  updateReport: (id: string, data: any) => request(`/reports/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(data),
+  }),
   generateReport: (reportId: string, includeAi: boolean = true) => request('/reports/generate', {
     method: 'POST',
     body: JSON.stringify({ report_id: reportId, include_ai_sections: includeAi }),

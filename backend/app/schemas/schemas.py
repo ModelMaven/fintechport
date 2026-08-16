@@ -179,6 +179,10 @@ class ReportGenerateRequest(BaseModel):
     report_id: UUID
     include_ai_sections: bool = True
 
+class ReportUpdate(BaseModel):
+    report_name: Optional[str] = None
+    report_data: Optional[Dict[str, Any]] = None
+
 class ReportResponse(ReportBase):
     id: UUID
     project_id: UUID

@@ -31,14 +31,22 @@ export default function ReportPreviewPage() {
   const [isEditing, setIsEditing] = useState(false);
 
   // Editable fields local state
-  const [editData, setEditData] = useState({
+  const [editData, setEditData] = useState<any>({
+    report_name: "",
+    cover_subtitle: "",
+    cover_date: "",
+    cover_ref: "",
     executive_summary: "",
     borrower_profile: "",
     industry_analysis: "",
     swot_analysis: "",
     project_feasibility: "",
     risk_analysis: "",
-    recommendation: ""
+    recommendation: "",
+    financial_current_ratio: "",
+    financial_quick_ratio: "",
+    financial_debt_equity: "",
+    financial_dscr: ""
   });
 
   const previewRef = useRef<HTMLDivElement>(null);
@@ -50,13 +58,21 @@ export default function ReportPreviewPage() {
         setReport(res);
         if (res.report_data) {
           setEditData({
+            report_name: res.report_name || "",
+            cover_subtitle: res.report_data.cover_subtitle || "Detailed Proposal for Project Capex Syndication, debt assessment, means of financing, and promoter assets appraisal.",
+            cover_date: res.report_data.cover_date || new Date(res.created_at).toLocaleDateString(),
+            cover_ref: res.report_data.cover_ref || `LC/${res.id.substring(0, 8).toUpperCase()}`,
             executive_summary: res.report_data.executive_summary || "",
             borrower_profile: res.report_data.borrower_profile || "",
             industry_analysis: res.report_data.industry_analysis || "",
             swot_analysis: res.report_data.swot_analysis || "",
             project_feasibility: res.report_data.project_feasibility || "",
             risk_analysis: res.report_data.risk_analysis || "",
-            recommendation: res.report_data.recommendation || ""
+            recommendation: res.report_data.recommendation || "",
+            financial_current_ratio: res.report_data.financials?.current_ratio || "1.60",
+            financial_quick_ratio: res.report_data.financials?.quick_ratio || "1.00",
+            financial_debt_equity: res.report_data.financials?.debt_equity || "1.20",
+            financial_dscr: res.report_data.financials?.dscr || "1.85",
           });
         }
         if (res.status === "Generating" || res.status === "Draft") {
@@ -93,19 +109,39 @@ export default function ReportPreviewPage() {
     window.open(url, "_blank");
   };
 
-  const handleSaveEdits = () => {
-    // Update local state and close edit
-    if (report) {
-      const updatedReport = {
-        ...report,
-        report_data: {
-          ...report.report_data,
-          ...editData
+  const handleSaveEdits = async () => {
+    if (!report) return;
+    
+    const payload = {
+      report_name: editData.report_name,
+      report_data: {
+        cover_subtitle: editData.cover_subtitle,
+        cover_date: editData.cover_date,
+        cover_ref: editData.cover_ref,
+        executive_summary: editData.executive_summary,
+        borrower_profile: editData.borrower_profile,
+        industry_analysis: editData.industry_analysis,
+        swot_analysis: editData.swot_analysis,
+        project_feasibility: editData.project_feasibility,
+        risk_analysis: editData.risk_analysis,
+        recommendation: editData.recommendation,
+        financials: {
+          ...report.report_data?.financials,
+          current_ratio: editData.financial_current_ratio,
+          quick_ratio: editData.financial_quick_ratio,
+          debt_equity: editData.financial_debt_equity,
+          dscr: editData.financial_dscr
         }
-      };
-      setReport(updatedReport);
+      }
+    };
+
+    try {
+      const updated = await api.updateReport(reportId, payload);
+      setReport(updated);
+      setIsEditing(false);
+    } catch (err) {
+      alert("Failed to save report changes: " + err);
     }
-    setIsEditing(false);
   };
 
   const sections = [
@@ -236,18 +272,64 @@ export default function ReportPreviewPage() {
                 
                 <div className="space-y-4">
                   <span className="text-[10px] font-bold text-brand-primary uppercase tracking-widest">CREDIT MEMORANDUM & PROJECT APPRAISAL</span>
-                  <h1 className="text-4xl font-extrabold tracking-tight text-brand-textPrimary leading-tight uppercase">
-                    {report?.report_name}
-                  </h1>
-                  <p className="text-sm text-brand-textSecondary leading-relaxed">
-                    Detailed Proposal for Project Capex Syndication, debt assessment, means of financing, and promoter assets appraisal.
-                  </p>
+                  {isEditing ? (
+                    <div className="space-y-2">
+                      <label className="block text-[8px] font-bold text-brand-textSecondary uppercase">Report Name</label>
+                      <input 
+                        type="text"
+                        value={editData.report_name}
+                        onChange={(e) => setEditData({ ...editData, report_name: e.target.value })}
+                        className="w-full p-2 border border-brand-border rounded-lg bg-brand-surface font-extrabold text-brand-textPrimary text-sm uppercase outline-none"
+                      />
+                      <label className="block text-[8px] font-bold text-brand-textSecondary uppercase mt-2">Subtitle / Description</label>
+                      <textarea 
+                        value={editData.cover_subtitle}
+                        onChange={(e) => setEditData({ ...editData, cover_subtitle: e.target.value })}
+                        rows={2}
+                        className="w-full p-2 border border-brand-border rounded-lg bg-brand-surface text-brand-textSecondary text-[10px] outline-none"
+                      />
+                    </div>
+                  ) : (
+                    <>
+                      <h1 className="text-4xl font-extrabold tracking-tight text-brand-textPrimary leading-tight uppercase">
+                        {report?.report_name}
+                      </h1>
+                      <p className="text-sm text-brand-textSecondary leading-relaxed">
+                        {report?.report_data?.cover_subtitle || "Detailed Proposal for Project Capex Syndication, debt assessment, means of financing, and promoter assets appraisal."}
+                      </p>
+                    </>
+                  )}
                 </div>
 
                 <div className="text-[10px] text-brand-textSecondary">
                   <p className="font-bold text-brand-textPrimary">LOANCRAFT AI ADVISORY SERVICES LTD</p>
-                  <p>Date compiled: {new Date(report?.created_at).toLocaleDateString()}</p>
-                  <p>Document Ref: LC/{reportId.substring(0, 8).toUpperCase()}</p>
+                  {isEditing ? (
+                    <div className="grid grid-cols-2 gap-3 mt-2">
+                      <div>
+                        <label className="block text-[8px] font-bold uppercase text-brand-textSecondary">Date Compiled</label>
+                        <input 
+                          type="text"
+                          value={editData.cover_date}
+                          onChange={(e) => setEditData({ ...editData, cover_date: e.target.value })}
+                          className="w-full p-1.5 border border-brand-border rounded bg-brand-surface outline-none text-[9px]"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[8px] font-bold uppercase text-brand-textSecondary">Document Reference</label>
+                        <input 
+                          type="text"
+                          value={editData.cover_ref}
+                          onChange={(e) => setEditData({ ...editData, cover_ref: e.target.value })}
+                          className="w-full p-1.5 border border-brand-border rounded bg-brand-surface outline-none text-[9px]"
+                        />
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <p>Date compiled: {report?.report_data?.cover_date || new Date(report?.created_at).toLocaleDateString()}</p>
+                      <p>Document Ref: {report?.report_data?.cover_ref || `LC/${reportId.substring(0, 8).toUpperCase()}`}</p>
+                    </>
+                  )}
                 </div>
               </div>
 
@@ -358,22 +440,66 @@ export default function ReportPreviewPage() {
                     <tbody className="divide-y divide-brand-border text-brand-textSecondary">
                       <tr>
                         <td className="p-2.5 font-bold text-brand-textPrimary">Current Ratio</td>
-                        <td className="p-2.5 font-mono">{reportData.financials?.current_ratio || "1.60"}x</td>
+                        <td className="p-2.5 font-mono">
+                          {isEditing ? (
+                            <input 
+                              type="text"
+                              value={editData.financial_current_ratio}
+                              onChange={(e) => setEditData({ ...editData, financial_current_ratio: e.target.value })}
+                              className="w-16 p-1 border border-brand-border rounded bg-brand-surface font-mono outline-none"
+                            />
+                          ) : (
+                            `${reportData.financials?.current_ratio || "1.60"}x`
+                          )}
+                        </td>
                         <td className="p-2.5 text-brand-success font-bold">✓ Aligned</td>
                       </tr>
                       <tr>
                         <td className="p-2.5 font-bold text-brand-textPrimary">Quick Ratio</td>
-                        <td className="p-2.5 font-mono">{reportData.financials?.quick_ratio || "1.00"}x</td>
+                        <td className="p-2.5 font-mono">
+                          {isEditing ? (
+                            <input 
+                              type="text"
+                              value={editData.financial_quick_ratio}
+                              onChange={(e) => setEditData({ ...editData, financial_quick_ratio: e.target.value })}
+                              className="w-16 p-1 border border-brand-border rounded bg-brand-surface font-mono outline-none"
+                            />
+                          ) : (
+                            `${reportData.financials?.quick_ratio || "1.00"}x`
+                          )}
+                        </td>
                         <td className="p-2.5 text-brand-success font-bold">✓ Aligned</td>
                       </tr>
                       <tr>
                         <td className="p-2.5 font-bold text-brand-textPrimary">Debt / Equity Ratio</td>
-                        <td className="p-2.5 font-mono">{reportData.financials?.debt_equity || "1.20"}x</td>
+                        <td className="p-2.5 font-mono">
+                          {isEditing ? (
+                            <input 
+                              type="text"
+                              value={editData.financial_debt_equity}
+                              onChange={(e) => setEditData({ ...editData, financial_debt_equity: e.target.value })}
+                              className="w-16 p-1 border border-brand-border rounded bg-brand-surface font-mono outline-none"
+                            />
+                          ) : (
+                            `${reportData.financials?.debt_equity || "1.20"}x`
+                          )}
+                        </td>
                         <td className="p-2.5 text-brand-success font-bold">✓ Aligned</td>
                       </tr>
                       <tr>
                         <td className="p-2.5 font-bold text-brand-textPrimary">Debt Service Coverage (DSCR)</td>
-                        <td className="p-2.5 font-mono">{reportData.financials?.dscr || "1.85"}x</td>
+                        <td className="p-2.5 font-mono">
+                          {isEditing ? (
+                            <input 
+                              type="text"
+                              value={editData.financial_dscr}
+                              onChange={(e) => setEditData({ ...editData, financial_dscr: e.target.value })}
+                              className="w-16 p-1 border border-brand-border rounded bg-brand-surface font-mono outline-none"
+                            />
+                          ) : (
+                            `${reportData.financials?.dscr || "1.85"}x`
+                          )}
+                        </td>
                         <td className="p-2.5 text-brand-success font-bold">✓ Aligned (&gt; 1.25x limit)</td>
                       </tr>
                     </tbody>
