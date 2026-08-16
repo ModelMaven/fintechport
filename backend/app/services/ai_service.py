@@ -48,7 +48,7 @@ class AIService:
         - Output the section directly as structured text or markdown.
         """
 
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={self.api_key}"
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={self.api_key}"
         headers = {"Content-Type": "application/json"}
         payload = {
             "contents": [
@@ -308,7 +308,7 @@ We recommend the sanction of the following credit facilities for **{company}**'s
         Return ONLY valid JSON. Do not include markdown formatting or backticks like ```json.
         """
 
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={self.api_key}"
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={self.api_key}"
         headers = {"Content-Type": "application/json"}
         payload = {
             "contents": [
@@ -328,8 +328,10 @@ We recommend the sanction of the following credit facilities for **{company}**'s
         }
 
         try:
+            logger.info(f"Sending autofill request to Gemini for: {company_name}")
             with httpx.Client(timeout=45.0) as client:
                 response = client.post(url, headers=headers, json=payload)
+                logger.info(f"Gemini API returned status code {response.status_code}")
                 if response.status_code == 200:
                     res_json = response.json()
                     candidates = res_json.get("candidates", [])
@@ -338,11 +340,15 @@ We recommend the sanction of the following credit facilities for **{company}**'s
                         parts = content_obj.get("parts", [])
                         if parts:
                             txt = parts[0].get("text", "").strip()
+                            logger.info(f"Gemini raw response text length: {len(txt)}")
                             if txt.startswith("```"):
                                 txt = txt.split("```")[1]
                                 if txt.startswith("json"):
                                     txt = txt[4:]
                             return json.loads(txt.strip())
+                    logger.error(f"Gemini response structure mismatch: {res_json}")
+                else:
+                    logger.error(f"Gemini API error status: {response.text}")
             return {}
         except Exception as e:
             logger.error(f"Gemini autofill API error: {e}")
