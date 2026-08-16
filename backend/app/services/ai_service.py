@@ -67,7 +67,7 @@ class AIService:
         }
 
         try:
-            with httpx.Client(timeout=45.0) as client:
+            with httpx.Client(timeout=90.0) as client:
                 response = client.post(url, headers=headers, json=payload)
                 if response.status_code == 200:
                     res_json = response.json()
@@ -328,7 +328,7 @@ We recommend the sanction of the following credit facilities for **{company}**'s
 
         try:
             logger.info(f"Sending autofill request to Gemini for: {company_name}")
-            with httpx.Client(timeout=45.0) as client:
+            with httpx.Client(timeout=90.0) as client:
                 response = client.post(url, headers=headers, json=payload)
                 logger.info(f"Gemini API returned status code {response.status_code}")
                 if response.status_code == 200:

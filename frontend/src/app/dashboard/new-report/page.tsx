@@ -41,7 +41,7 @@ export default function NewReportWizard() {
     setAiLoading(true);
     try {
       const data = await api.autofillProposal(aiCompanyName, aiPrompt);
-      if (data && Object.keys(data).length > 0) {
+      if (data && typeof data === 'object' && 'company_name' in data && data.company_name) {
         setFormData({
           company_name: data.company_name || "",
           constitution: data.constitution || "Private Limited Company",
