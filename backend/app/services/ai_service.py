@@ -322,8 +322,7 @@ We recommend the sanction of the following credit facilities for **{company}**'s
                 {"googleSearch": {}}
             ],
             "generationConfig": {
-                "temperature": 0.2,
-                "responseMimeType": "application/json"
+                "temperature": 0.2
             }
         }
 
