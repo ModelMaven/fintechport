@@ -42,15 +42,44 @@ export default function NewReportWizard() {
     try {
       const data = await api.autofillProposal(aiCompanyName, aiPrompt);
       if (data && Object.keys(data).length > 0) {
-        setFormData(prev => ({
-          ...prev,
-          ...data,
-          promoter_details: data.promoter_details || prev.promoter_details,
-          completed_projects: data.completed_projects || prev.completed_projects,
-          ongoing_projects: data.ongoing_projects || prev.ongoing_projects,
-          financial_years: data.financial_years || prev.financial_years,
-          projected_years: data.projected_years || prev.projected_years
-        }));
+        setFormData({
+          company_name: data.company_name || "",
+          constitution: data.constitution || "Private Limited Company",
+          industry: data.industry || "Manufacturing",
+          reg_number: data.reg_number || "",
+          inc_date: data.inc_date || "",
+          promoter_details: data.promoter_details || [],
+          business_overview: data.business_overview || "",
+          market_share: data.market_share || "",
+          major_customers: data.major_customers || "",
+          completed_projects: data.completed_projects || [],
+          ongoing_projects: data.ongoing_projects || [],
+          proposed_project_name: data.proposed_project_name || "",
+          project_location: data.project_location || data.proposed_location || "",
+          project_type: data.project_type || data.proposed_project_type || "",
+          project_capacity: data.project_capacity || data.proposed_capacity || "",
+          land_cost: Number(data.land_cost) || 0,
+          civil_works: Number(data.civil_works || data.building_cost) || 0,
+          plant_machinery: Number(data.plant_machinery || data.machinery_cost) || 0,
+          contingency: Number(data.contingency || data.contingency_cost) || 0,
+          wc_margin: Number(data.wc_margin || data.working_capital_required) || 0,
+          total_cost: Number(data.total_cost || data.total_project_cost) || 0,
+          promoter_equity: Number(data.promoter_equity) || 0,
+          proposed_term_loan: Number(data.proposed_term_loan || data.term_loan_required) || 0,
+          subsidy_grant: Number(data.subsidy_grant) || 0,
+          existing_loans: data.existing_loans || [],
+          audited_fy25_revenue: Number(data.audited_fy25_revenue) || 0,
+          audited_fy25_pat: Number(data.audited_fy25_pat) || 0,
+          audited_fy25_depr: Number(data.audited_fy25_depr) || 0,
+          projected_fy26_revenue: Number(data.projected_fy26_revenue) || 0,
+          projected_fy26_pat: Number(data.projected_fy26_pat) || 0,
+          projected_fy26_depr: Number(data.projected_fy26_depr) || 0,
+          raw_material_risk: data.raw_material_risk || "",
+          mitigation: data.mitigation || "",
+          primary_security: data.primary_security || "",
+          collateral_property: data.collateral_property || data.collateral_security || "",
+          uploaded_files: []
+        });
         alert("Success! All 15 wizard steps have been autofilled by Gemini AI with live web details.");
       } else {
         alert("Gemini AI was unable to generate autofill structured data. Please try again with a clearer company name.");
