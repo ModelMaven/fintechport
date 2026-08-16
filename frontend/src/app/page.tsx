@@ -115,9 +115,6 @@ export default function LandingPage() {
             <Link href="/dashboard" className="w-full sm:w-auto px-8 py-4 bg-brand-primary hover:bg-brand-primaryHover text-white font-semibold rounded-full shadow-sm flex items-center justify-center gap-2 transition-all group">
               Get Started <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
             </Link>
-            <a href="#demo" className="w-full sm:w-auto px-8 py-4 bg-white border border-brand-border hover:bg-brand-surface text-brand-textPrimary font-semibold rounded-full flex items-center justify-center gap-2 transition-colors">
-              Book a Demo
-            </a>
           </div>
 
           <div className="mt-16 md:mt-24 border border-brand-border rounded-2xl shadow-premium overflow-hidden bg-brand-surface max-w-6xl mx-auto p-3">
