@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, status
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, status, BackgroundTasks
 from sqlalchemy.orm import Session
 from uuid import UUID
 import uuid
@@ -17,6 +17,7 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 @router.post("/upload", response_model=DocumentResponse, status_code=status.HTTP_201_CREATED)
 def upload_document(
+    background_tasks: BackgroundTasks,
     project_id: UUID = Form(...),
     doc_type: str = Form(...),
     file: UploadFile = File(...),
@@ -64,13 +65,8 @@ def upload_document(
     db.commit()
     db.refresh(new_doc)
 
-    # Trigger background parsing
-    try:
-        ocr_processing_task.delay(str(new_doc.id))
-    except Exception:
-        # Fallback to synchronous execution if Celery connection fails in local stand-alone mode
-        ocr_processing_task(str(new_doc.id))
-        db.refresh(new_doc)
+    # Trigger background parsing in the same process background thread
+    background_tasks.add_task(ocr_processing_task, str(new_doc.id))
 
     return new_doc
 

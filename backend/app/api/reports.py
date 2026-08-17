@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, BackgroundTasks
 from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 from typing import List
@@ -43,6 +43,7 @@ def create_report(
 @router.post("/generate", response_model=ReportResponse)
 def trigger_generation(
     payload: ReportGenerateRequest,
+    background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
@@ -53,13 +54,8 @@ def trigger_generation(
     report.status = "Generating"
     db.commit()
 
-    # Trigger background tasks
-    try:
-        report_generation_task.delay(str(report.id))
-    except Exception:
-        # Fallback to synchronous run if Celery broker is offline
-        report_generation_task(str(report.id))
-        db.refresh(report)
+    # Trigger via FastAPI BackgroundTasks to run in the same process background thread
+    background_tasks.add_task(report_generation_task, str(report.id))
 
     return report
 
