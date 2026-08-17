@@ -41,6 +41,14 @@ export default function NewReportWizard() {
     setAiLoading(true);
     try {
       const data = await api.autofillProposal(aiCompanyName, aiPrompt);
+      const toCrores = (val: any): number => {
+        const num = Number(val) || 0;
+        if (num >= 100000) {
+          return num / 10000000;
+        }
+        return num;
+      };
+
       if (data && typeof data === 'object' && 'company_name' in data && data.company_name) {
         setFormData({
           company_name: data.company_name || "",
@@ -58,22 +66,22 @@ export default function NewReportWizard() {
           project_location: data.project_location || data.proposed_location || "",
           project_type: data.project_type || data.proposed_project_type || "",
           project_capacity: data.project_capacity || data.proposed_capacity || "",
-          land_cost: Number(data.land_cost) || 0,
-          civil_works: Number(data.civil_works || data.building_cost) || 0,
-          plant_machinery: Number(data.plant_machinery || data.machinery_cost) || 0,
-          contingency: Number(data.contingency || data.contingency_cost) || 0,
-          wc_margin: Number(data.wc_margin || data.working_capital_required) || 0,
-          total_cost: Number(data.total_cost || data.total_project_cost) || 0,
-          promoter_equity: Number(data.promoter_equity) || 0,
-          proposed_term_loan: Number(data.proposed_term_loan || data.term_loan_required) || 0,
-          subsidy_grant: Number(data.subsidy_grant) || 0,
+          land_cost: toCrores(data.land_cost),
+          civil_works: toCrores(data.civil_works || data.building_cost),
+          plant_machinery: toCrores(data.plant_machinery || data.machinery_cost),
+          contingency: toCrores(data.contingency || data.contingency_cost),
+          wc_margin: toCrores(data.wc_margin || data.working_capital_required),
+          total_cost: toCrores(data.total_cost || data.total_project_cost),
+          promoter_equity: toCrores(data.promoter_equity),
+          proposed_term_loan: toCrores(data.proposed_term_loan || data.term_loan_required),
+          subsidy_grant: toCrores(data.subsidy_grant),
           existing_loans: data.existing_loans || [],
-          audited_fy25_revenue: Number(data.audited_fy25_revenue) || 0,
-          audited_fy25_pat: Number(data.audited_fy25_pat) || 0,
-          audited_fy25_depr: Number(data.audited_fy25_depr) || 0,
-          projected_fy26_revenue: Number(data.projected_fy26_revenue) || 0,
-          projected_fy26_pat: Number(data.projected_fy26_pat) || 0,
-          projected_fy26_depr: Number(data.projected_fy26_depr) || 0,
+          audited_fy25_revenue: toCrores(data.audited_fy25_revenue),
+          audited_fy25_pat: toCrores(data.audited_fy25_pat),
+          audited_fy25_depr: toCrores(data.audited_fy25_depr),
+          projected_fy26_revenue: toCrores(data.projected_fy26_revenue),
+          projected_fy26_pat: toCrores(data.projected_fy26_pat),
+          projected_fy26_depr: toCrores(data.projected_fy26_depr),
           raw_material_risk: data.raw_material_risk || "",
           mitigation: data.mitigation || "",
           primary_security: data.primary_security || "",

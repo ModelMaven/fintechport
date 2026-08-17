@@ -38,8 +38,12 @@ export default function DashboardOverview() {
 
   const totalTermLoanPipeline = reports.reduce((acc, report) => {
     // Read from report cost/limit data if present
-    const limit = report.report_data?.project_details?.technical_details?.term_loan || 8.5;
-    return acc + Number(limit);
+    let limit = Number(report.report_data?.project_details?.technical_details?.term_loan || 8.5);
+    // If the number is in raw Rupees, convert it to Crores
+    if (limit >= 100000) {
+      limit = limit / 10000000;
+    }
+    return acc + limit;
   }, 0);
 
   const pendingCount = reports.filter(r => r.status === "Generating" || r.status === "Draft").length;
