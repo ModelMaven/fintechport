@@ -120,6 +120,12 @@ export default function ReportPreviewPage() {
 
   useEffect(() => {
     loadReport();
+    if (typeof window !== "undefined") {
+      const query = new URLSearchParams(window.location.search);
+      if (query.get("edit") === "true") {
+        setIsEditing(true);
+      }
+    }
   }, [reportId]);
 
   const handleZoomIn = () => setZoom(z => Math.min(z + 10, 150));

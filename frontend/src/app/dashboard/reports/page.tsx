@@ -10,7 +10,8 @@ import {
   Eye, 
   CheckCircle2, 
   AlertCircle,
-  Plus
+  Plus,
+  Edit3
 } from "lucide-react";
 
 export default function ReportsListPage() {
@@ -118,9 +119,15 @@ export default function ReportsListPage() {
                     <td className="p-4 text-right space-x-2">
                       <Link 
                         href={`/dashboard/reports/${report.id}`}
-                        className="px-3 py-1.5 border border-brand-border hover:bg-brand-surface font-bold rounded-full inline-flex items-center gap-1"
+                        className="px-3 py-1.5 border border-brand-border hover:bg-brand-surface font-bold rounded-full inline-flex items-center gap-1 text-brand-textSecondary hover:text-brand-textPrimary"
                       >
                         <Eye size={12} /> Preview
+                      </Link>
+                      <Link 
+                        href={`/dashboard/reports/${report.id}?edit=true`}
+                        className="px-3 py-1.5 border border-brand-border hover:bg-brand-surface font-bold rounded-full inline-flex items-center gap-1 text-brand-primary"
+                      >
+                        <Edit3 size={12} /> Edit
                       </Link>
                       {report.status === "Completed" && (
                         <>
