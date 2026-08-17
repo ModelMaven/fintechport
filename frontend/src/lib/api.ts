@@ -51,6 +51,9 @@ export const api = {
     method: 'POST',
     body: JSON.stringify(data),
   }),
+  deleteBorrower: (id: string) => request(`/borrowers/${id}`, {
+    method: 'DELETE',
+  }),
 
   // Projects
   getProjects: () => request('/projects'),

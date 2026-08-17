@@ -12,7 +12,8 @@ import {
   Check, 
   X,
   CreditCard,
-  UserPlus
+  UserPlus,
+  Trash2
 } from "lucide-react";
 
 export default function BorrowersPage() {
@@ -104,6 +105,18 @@ export default function BorrowersPage() {
     }
   };
 
+  const handleDelete = async (id: string, name: string) => {
+    if (!window.confirm(`Are you sure you want to delete the borrower profile for "${name}"?\nThis will delete all associated projects, financial statements, and reports.`)) {
+      return;
+    }
+    try {
+      await api.deleteBorrower(id);
+      loadData();
+    } catch (err) {
+      alert("Failed to delete borrower profile: " + err);
+    }
+  };
+
   const filteredBorrowers = borrowers.filter(b => 
     b.company_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     b.industry.toLowerCase().includes(searchQuery.toLowerCase())
@@ -159,9 +172,18 @@ export default function BorrowersPage() {
                   <div className="p-2 bg-brand-surface rounded-lg text-brand-primary border border-brand-border/60">
                     <Building size={16} />
                   </div>
-                  <span className="text-[9px] font-bold text-brand-textSecondary uppercase tracking-widest bg-brand-surface px-2.5 py-0.5 rounded-full border border-brand-border/60">
-                    {borrower.constitution.replace("Company", "").trim()}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[9px] font-bold text-brand-textSecondary uppercase tracking-widest bg-brand-surface px-2.5 py-0.5 rounded-full border border-brand-border/60">
+                      {borrower.constitution.replace("Company", "").trim()}
+                    </span>
+                    <button
+                      onClick={() => handleDelete(borrower.id, borrower.company_name)}
+                      className="p-1.5 text-brand-textSecondary hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors border border-transparent hover:border-red-100"
+                      title="Delete Profile"
+                    >
+                      <Trash2 size={13} />
+                    </button>
+                  </div>
                 </div>
                 
                 <h3 className="font-bold text-sm text-brand-textPrimary line-clamp-1">{borrower.company_name}</h3>

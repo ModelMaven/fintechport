@@ -69,3 +69,27 @@ def get_borrower(
             detail="Borrower profile not found or access is restricted."
         )
     return borrower
+
+@router.delete("/{borrower_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_borrower(
+    borrower_id: UUID,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """
+    Deletes an existing borrower profile.
+    """
+    borrower = db.query(Borrower).filter(
+        Borrower.id == borrower_id,
+        Borrower.user_id == current_user.id
+    ).first()
+    
+    if not borrower:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Borrower profile not found or access is restricted."
+        )
+    
+    db.delete(borrower)
+    db.commit()
+    return None
