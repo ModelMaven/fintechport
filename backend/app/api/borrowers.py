@@ -93,3 +93,41 @@ def delete_borrower(
     db.delete(borrower)
     db.commit()
     return None
+
+@router.put("/{borrower_id}", response_model=BorrowerResponse)
+def update_borrower(
+    borrower_id: UUID,
+    payload: BorrowerCreate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """
+    Updates an existing borrower profile.
+    """
+    borrower = db.query(Borrower).filter(
+        Borrower.id == borrower_id,
+        Borrower.user_id == current_user.id
+    ).first()
+    
+    if not borrower:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Borrower profile not found or access is restricted."
+        )
+        
+    promoter_data = [p.dict() for p in payload.promoter_details] if payload.promoter_details else []
+    
+    borrower.company_name = payload.company_name
+    borrower.constitution = payload.constitution
+    borrower.industry = payload.industry
+    borrower.registration_number = payload.registration_number
+    borrower.pan = payload.pan
+    borrower.date_of_incorporation = payload.date_of_incorporation
+    borrower.registered_address = payload.registered_address
+    borrower.office_address = payload.office_address
+    borrower.promoter_details = promoter_data
+    borrower.shareholding_pattern = payload.shareholding_pattern
+    
+    db.commit()
+    db.refresh(borrower)
+    return borrower

@@ -13,13 +13,15 @@ import {
   X,
   CreditCard,
   UserPlus,
-  Trash2
+  Trash2,
+  Pencil
 } from "lucide-react";
 
 export default function BorrowersPage() {
   const [borrowers, setBorrowers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
+  const [editingBorrowerId, setEditingBorrowerId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
 
   // Form states
@@ -68,6 +70,35 @@ export default function BorrowersPage() {
     setPromoters(copy);
   };
 
+  const closeModalAndReset = () => {
+    setModalOpen(false);
+    setEditingBorrowerId(null);
+    setCompanyName("");
+    setRegNo("");
+    setIncDate("");
+    setRegAddr("");
+    setOfficeAddr("");
+    setPan("");
+    setPromoters([{ name: "", age: 45, equity_percentage: 100, net_worth: 0.00 }]);
+  };
+
+  const handleEditClick = (b: any) => {
+    setEditingBorrowerId(b.id);
+    setCompanyName(b.company_name);
+    setConstitution(b.constitution);
+    setIndustry(b.industry);
+    setRegNo(b.registration_number || "");
+    setIncDate(b.date_of_incorporation || "");
+    setRegAddr(b.registered_address || "");
+    setOfficeAddr(b.office_address || "");
+    setPan(b.pan || "");
+    setPromoters(b.promoter_details && b.promoter_details.length > 0 
+      ? b.promoter_details 
+      : [{ name: "", age: 45, equity_percentage: 100, net_worth: 0.00 }]
+    );
+    setModalOpen(true);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!companyName) return;
@@ -89,19 +120,15 @@ export default function BorrowersPage() {
     };
 
     try {
-      await api.createBorrower(payload);
-      setModalOpen(false);
-      // Reset form
-      setCompanyName("");
-      setRegNo("");
-      setIncDate("");
-      setRegAddr("");
-      setOfficeAddr("");
-      setPan("");
-      setPromoters([{ name: "", age: 45, equity_percentage: 100, net_worth: 0.00 }]);
+      if (editingBorrowerId) {
+        await api.updateBorrower(editingBorrowerId, payload);
+      } else {
+        await api.createBorrower(payload);
+      }
+      closeModalAndReset();
       loadData();
     } catch (err) {
-      alert("Failed to create borrower profile: " + err);
+      alert(`Failed to ${editingBorrowerId ? "update" : "create"} borrower profile: ` + err);
     }
   };
 
@@ -131,7 +158,7 @@ export default function BorrowersPage() {
           <p className="text-xs text-brand-textSecondary mt-1">Manage borrower profiles and promoter details.</p>
         </div>
         <button 
-          onClick={() => setModalOpen(true)}
+          onClick={() => { closeModalAndReset(); setModalOpen(true); }}
           className="px-5 py-2.5 bg-brand-primary hover:bg-brand-primaryHover text-white text-xs font-bold rounded-full shadow-sm flex items-center gap-1.5 transition-colors"
         >
           <Plus size={14} /> Add Borrower
@@ -177,6 +204,13 @@ export default function BorrowersPage() {
                       {borrower.constitution.replace("Company", "").trim()}
                     </span>
                     <button
+                      onClick={() => handleEditClick(borrower)}
+                      className="p-1.5 text-brand-textSecondary hover:text-brand-primary hover:bg-brand-surface rounded-lg transition-colors border border-transparent"
+                      title="Edit Profile"
+                    >
+                      <Pencil size={13} />
+                    </button>
+                    <button
                       onClick={() => handleDelete(borrower.id, borrower.company_name)}
                       className="p-1.5 text-brand-textSecondary hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors border border-transparent hover:border-red-100"
                       title="Delete Profile"
@@ -221,9 +255,9 @@ export default function BorrowersPage() {
           <div className="bg-white rounded-2xl border border-brand-border w-full max-w-2xl max-h-[85vh] overflow-y-auto shadow-2xl p-6 md:p-8">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-base font-bold text-brand-textPrimary flex items-center gap-1.5">
-                <UserPlus size={18} className="text-brand-primary" /> Onboard Corporate Borrower
+                <UserPlus size={18} className="text-brand-primary" /> {editingBorrowerId ? "Edit Borrower Profile" : "Onboard Corporate Borrower"}
               </h2>
-              <button onClick={() => setModalOpen(false)} className="p-1 hover:bg-brand-surface rounded text-brand-textSecondary">
+              <button onClick={closeModalAndReset} className="p-1 hover:bg-brand-surface rounded text-brand-textSecondary">
                 <X size={16} />
               </button>
             </div>
@@ -396,7 +430,7 @@ export default function BorrowersPage() {
               <div className="border-t border-brand-border pt-4 flex justify-end gap-3">
                 <button 
                   type="button" 
-                  onClick={() => setModalOpen(false)}
+                  onClick={closeModalAndReset}
                   className="px-4 py-2 border border-brand-border hover:bg-brand-surface rounded-full font-bold"
                 >
                   Cancel

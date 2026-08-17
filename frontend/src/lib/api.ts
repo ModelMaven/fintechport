@@ -51,6 +51,10 @@ export const api = {
     method: 'POST',
     body: JSON.stringify(data),
   }),
+  updateBorrower: (id: string, data: any) => request(`/borrowers/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(data),
+  }),
   deleteBorrower: (id: string) => request(`/borrowers/${id}`, {
     method: 'DELETE',
   }),
