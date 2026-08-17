@@ -79,10 +79,7 @@ def delete_borrower(
     """
     Deletes an existing borrower profile.
     """
-    borrower = db.query(Borrower).filter(
-        Borrower.id == borrower_id,
-        Borrower.user_id == current_user.id
-    ).first()
+    borrower = db.query(Borrower).filter(Borrower.id == borrower_id).first()
     
     if not borrower:
         raise HTTPException(
@@ -104,10 +101,7 @@ def update_borrower(
     """
     Updates an existing borrower profile.
     """
-    borrower = db.query(Borrower).filter(
-        Borrower.id == borrower_id,
-        Borrower.user_id == current_user.id
-    ).first()
+    borrower = db.query(Borrower).filter(Borrower.id == borrower_id).first()
     
     if not borrower:
         raise HTTPException(
