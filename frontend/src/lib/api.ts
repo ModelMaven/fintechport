@@ -115,6 +115,9 @@ export const api = {
     method: 'PUT',
     body: JSON.stringify(data),
   }),
+  deleteReport: (id: string) => request(`/reports/${id}`, {
+    method: 'DELETE',
+  }),
   generateReport: (reportId: string, includeAi: boolean = true) => request('/reports/generate', {
     method: 'POST',
     body: JSON.stringify({ report_id: reportId, include_ai_sections: includeAi }),
