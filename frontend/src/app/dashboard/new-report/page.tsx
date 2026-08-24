@@ -360,9 +360,25 @@ export default function NewReportWizard() {
   if (!mounted) return null;
 
   return (
-    <div className="flex flex-col lg:flex-row gap-8 items-start text-xs">
-      {/* Steps Sidebar Left */}
-      <div className="w-full lg:w-64 flex-shrink-0 bg-white border border-brand-border rounded-2xl p-6 shadow-sm sticky top-20">
+    <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start text-xs">
+      {/* Mobile Step Dropdown (Visible on mobile/tablet, hidden on desktop) */}
+      <div className="lg:hidden w-full bg-white border border-brand-border rounded-2xl p-4 shadow-sm">
+        <label className="block text-[8px] font-bold text-brand-textSecondary uppercase mb-1">Step {step} of 15</label>
+        <select
+          value={step}
+          onChange={(e) => setStep(Number(e.target.value))}
+          className="w-full p-2.5 border border-brand-border rounded-lg bg-brand-surface font-bold text-[10px] outline-none shadow-xs"
+        >
+          {stepsList.map((s) => (
+            <option key={s.num} value={s.num}>
+              Step {s.num}: {s.name}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* Steps Sidebar Left (Desktop only) */}
+      <div className="hidden lg:block w-64 flex-shrink-0 bg-white border border-brand-border rounded-2xl p-6 shadow-sm sticky top-20">
         <h3 className="font-bold text-sm text-brand-textPrimary mb-4">Wizard Navigation</h3>
         <div className="space-y-1 max-h-[60vh] overflow-y-auto pr-2">
           {stepsList.map((s) => {
