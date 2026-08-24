@@ -360,7 +360,7 @@ export default function NewReportWizard() {
   if (!mounted) return null;
 
   return (
-    <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-start text-xs w-full">
+    <div className="w-full space-y-6 text-xs">
       {/* Mobile Step Dropdown (Visible on mobile/tablet, hidden on desktop) */}
       <div className="md:hidden w-full bg-white border border-brand-border rounded-2xl p-4 shadow-sm">
         <label className="block text-[8px] font-bold text-brand-textSecondary uppercase mb-1">Step {step} of 15</label>
@@ -377,8 +377,9 @@ export default function NewReportWizard() {
         </select>
       </div>
 
-      {/* Steps Sidebar Left (Desktop only) */}
-      <div className="hidden md:block w-64 flex-shrink-0 bg-white border border-brand-border rounded-2xl p-6 shadow-sm sticky top-20">
+      <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-start w-full">
+        {/* Steps Sidebar Left (Desktop only) */}
+        <div className="hidden md:block w-64 flex-shrink-0 bg-white border border-brand-border rounded-2xl p-6 shadow-sm sticky top-20">
         <h3 className="font-bold text-sm text-brand-textPrimary mb-4">Wizard Navigation</h3>
         <div className="space-y-1 max-h-[60vh] overflow-y-auto pr-2">
           {stepsList.map((s) => {
@@ -955,5 +956,6 @@ export default function NewReportWizard() {
         )}
       </div>
     </div>
-  );
+  </div>
+);
 }
