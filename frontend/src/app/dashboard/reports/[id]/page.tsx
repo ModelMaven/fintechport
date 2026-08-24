@@ -29,6 +29,7 @@ export default function ReportPreviewPage() {
   const [zoom, setZoom] = useState(100);
   const [activeSection, setActiveSection] = useState("cover");
   const [isEditing, setIsEditing] = useState(false);
+  const [mobileScale, setMobileScale] = useState(1);
 
   // Editable fields local state
   const [editData, setEditData] = useState<any>({
@@ -125,6 +126,20 @@ export default function ReportPreviewPage() {
       if (query.get("edit") === "true") {
         setIsEditing(true);
       }
+
+      const handleResize = () => {
+        const width = window.innerWidth;
+        if (width < 850) {
+          const parentWidth = width - 24; 
+          setMobileScale(parentWidth / 800);
+        } else {
+          setMobileScale(1);
+        }
+      };
+
+      handleResize();
+      window.addEventListener("resize", handleResize);
+      return () => window.removeEventListener("resize", handleResize);
     }
   }, [reportId]);
 
@@ -229,23 +244,23 @@ export default function ReportPreviewPage() {
   return (
     <div className="flex flex-col h-[calc(100vh-8rem)] text-xs text-brand-textPrimary">
       {/* Top Controls Toolbar */}
-      <div className="h-14 border-b border-brand-border bg-white flex items-center justify-between px-6 flex-shrink-0 gap-4">
-        <div className="flex items-center gap-3">
+      <div className="min-h-14 py-2 border-b border-brand-border bg-white flex flex-col md:flex-row items-start md:items-center justify-between px-4 sm:px-6 flex-shrink-0 gap-3">
+        <div className="flex items-center gap-3 w-full md:w-auto">
           <button 
             onClick={() => router.push("/dashboard")}
             className="p-2 border border-brand-border rounded-lg text-brand-textSecondary hover:text-brand-textPrimary hover:bg-brand-surface"
           >
             <ArrowLeft size={14} />
           </button>
-          <div>
-            <h1 className="font-bold text-xs text-brand-textPrimary line-clamp-1">{report?.report_name}</h1>
+          <div className="min-w-0 flex-1">
+            <h1 className="font-bold text-xs text-brand-textPrimary truncate">{report?.report_name}</h1>
             <p className="text-[9px] text-brand-textSecondary">Template: {report?.template_type.toUpperCase()}</p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap w-full md:w-auto justify-end">
           {/* Zoom controls */}
-          <div className="flex items-center border border-brand-border rounded-full overflow-hidden mr-2">
+          <div className="hidden sm:flex items-center border border-brand-border rounded-full overflow-hidden mr-2">
             <button onClick={handleZoomOut} className="p-2 bg-brand-surface hover:bg-brand-border text-brand-textSecondary"><ZoomOut size={12} /></button>
             <span className="px-3 font-semibold text-[10px] bg-white border-x border-brand-border">{zoom}%</span>
             <button onClick={handleZoomIn} className="p-2 bg-brand-surface hover:bg-brand-border text-brand-textSecondary"><ZoomIn size={12} /></button>
@@ -253,25 +268,25 @@ export default function ReportPreviewPage() {
 
           <button 
             onClick={() => setIsEditing(!isEditing)}
-            className={`px-4 py-2 border rounded-full font-bold flex items-center gap-1.5 transition-colors ${
+            className={`px-3 py-1.5 sm:px-4 sm:py-2 border rounded-full font-bold flex items-center gap-1 transition-colors text-[10px] sm:text-xs ${
               isEditing 
                 ? "bg-brand-primary text-white border-brand-primary" 
                 : "border-brand-border hover:bg-brand-surface text-brand-textPrimary"
             }`}
           >
-            <Edit3 size={12} /> {isEditing ? "Cancel Edit" : "Edit Proposal"}
+            <Edit3 size={11} /> <span>{isEditing ? "Cancel" : "Edit"}</span>
           </button>
 
-          <button onClick={handlePrint} className="p-2 border border-brand-border text-brand-textSecondary hover:text-brand-textPrimary rounded-full hover:bg-brand-surface">
+          <button onClick={handlePrint} className="hidden sm:block p-2 border border-brand-border text-brand-textSecondary hover:text-brand-textPrimary rounded-full hover:bg-brand-surface">
             <Printer size={13} />
           </button>
 
-          <button onClick={handleExportDocx} className="px-4 py-2 bg-brand-surface hover:bg-brand-border border border-brand-border text-brand-textPrimary font-bold rounded-full flex items-center gap-1">
-            <Download size={12} /> Word
+          <button onClick={handleExportDocx} className="px-3 py-1.5 sm:px-4 sm:py-2 bg-brand-surface hover:bg-brand-border border border-brand-border text-brand-textPrimary font-bold rounded-full flex items-center gap-1 text-[10px] sm:text-xs">
+            <Download size={11} /> <span>Word</span>
           </button>
 
-          <button onClick={handleExportPdf} className="px-4 py-2 bg-brand-primary hover:bg-brand-primaryHover text-white font-bold rounded-full shadow-sm flex items-center gap-1">
-            <Download size={12} /> PDF
+          <button onClick={handleExportPdf} className="px-3 py-1.5 sm:px-4 sm:py-2 bg-brand-primary hover:bg-brand-primaryHover text-white font-bold rounded-full shadow-sm flex items-center gap-1 text-[10px] sm:text-xs">
+            <Download size={11} /> <span>PDF</span>
           </button>
         </div>
       </div>
@@ -305,10 +320,31 @@ export default function ReportPreviewPage() {
         </aside>
 
         {/* Right Side Live Word preview */}
-        <div className="flex-1 overflow-y-auto bg-brand-surface p-8 flex justify-center">
+        <div className="flex-1 overflow-y-auto bg-brand-surface p-2 sm:p-8 flex flex-col items-center">
+          {/* Mobile Table of Contents Selector Dropdown */}
+          <div className="w-full max-w-[800px] mb-4 md:hidden px-2">
+            <label className="block text-[8px] font-bold text-brand-textSecondary uppercase mb-1">Jump to Section</label>
+            <select
+              value={activeSection}
+              onChange={(e) => {
+                const secId = e.target.value;
+                setActiveSection(secId);
+                const element = document.getElementById(secId);
+                if (element) {
+                  element.scrollIntoView({ behavior: "smooth", block: "start" });
+                }
+              }}
+              className="w-full p-2.5 border border-brand-border rounded-lg bg-white font-bold text-[10px] outline-none shadow-xs"
+            >
+              {sections.map((sec) => (
+                <option key={sec.id} value={sec.id}>{sec.label}</option>
+              ))}
+            </select>
+          </div>
+
           <div 
             ref={previewRef}
-            style={{ transform: `scale(${zoom / 100})`, transformOrigin: "top center", width: "800px" }}
+            style={{ transform: `scale(${(zoom / 100) * mobileScale})`, transformOrigin: "top center", width: "800px", marginBottom: "4rem" }}
             className="bg-white border border-brand-border shadow-premium rounded-none p-12 min-h-[1100px] text-left transition-transform duration-100 flex flex-col justify-between"
           >
             {/* Paper Preview Content */}
