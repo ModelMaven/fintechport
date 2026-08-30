@@ -50,22 +50,22 @@ export default function DashboardOverview() {
   const completedCount = reports.filter(r => r.status === "Completed").length;
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 xl:space-y-10">
       {/* Welcome banner */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-brand-textPrimary">Welcome back</h1>
-          <p className="text-xs text-brand-textSecondary mt-1">Here is a summary of your credit appraisal pipeline.</p>
+          <h1 className="text-2xl xl:text-3xl 2xl:text-4xl font-bold tracking-tight text-brand-textPrimary">Welcome back</h1>
+          <p className="text-xs xl:text-sm 2xl:text-base text-brand-textSecondary mt-1">Here is a summary of your credit appraisal pipeline.</p>
         </div>
         <div className="flex items-center gap-3">
-          <Link href="/dashboard/new-report" className="px-5 py-2.5 bg-brand-primary hover:bg-brand-primaryHover text-white text-xs font-bold rounded-full shadow-sm flex items-center gap-1.5 transition-colors">
-            <PlusCircle size={14} /> New Credit Report
+          <Link href="/dashboard/new-report" className="px-5 py-2.5 xl:px-6 xl:py-3 bg-brand-primary hover:bg-brand-primaryHover text-white text-xs xl:text-sm font-bold rounded-full shadow-sm flex items-center gap-1.5 transition-colors">
+            <PlusCircle size={14} className="xl:w-4.5 xl:h-4.5" /> New Credit Report
           </Link>
         </div>
       </div>
 
       {loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 xl:gap-8">
           {[1, 2, 3, 4].map(idx => (
             <div key={idx} className="h-28 bg-white border border-brand-border rounded-2xl animate-pulse" />
           ))}
@@ -73,41 +73,41 @@ export default function DashboardOverview() {
       ) : (
         <>
           {/* Key Stat Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div className="bg-white p-6 rounded-2xl border border-brand-border shadow-sm">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 xl:gap-8">
+            <div className="bg-white p-6 xl:p-8 rounded-2xl border border-brand-border shadow-sm">
               <div className="flex justify-between items-start">
-                <span className="text-[11px] font-bold text-brand-textSecondary uppercase tracking-wider">Active Pipeline</span>
-                <span className="p-1 bg-brand-surface rounded text-brand-primary"><Briefcase size={12} /></span>
+                <span className="text-[11px] xl:text-xs 2xl:text-sm font-bold text-brand-textSecondary uppercase tracking-wider">Active Pipeline</span>
+                <span className="p-1 xl:p-1.5 bg-brand-surface rounded text-brand-primary"><Briefcase size={12} className="xl:w-3.5 xl:h-3.5" /></span>
               </div>
-              <h2 className="text-2xl font-bold text-brand-textPrimary mt-4">Rs. {totalTermLoanPipeline.toFixed(2)} Cr</h2>
-              <p className="text-[10px] text-brand-textSecondary mt-1">Estimated term loan requirements</p>
+              <h2 className="text-2xl xl:text-3xl 2xl:text-4xl font-bold text-brand-textPrimary mt-4">Rs. {totalTermLoanPipeline.toFixed(2)} Cr</h2>
+              <p className="text-[10px] xl:text-xs 2xl:text-sm text-brand-textSecondary mt-1">Estimated term loan requirements</p>
             </div>
 
-            <div className="bg-white p-6 rounded-2xl border border-brand-border shadow-sm">
+            <div className="bg-white p-6 xl:p-8 rounded-2xl border border-brand-border shadow-sm">
               <div className="flex justify-between items-start">
-                <span className="text-[11px] font-bold text-brand-textSecondary uppercase tracking-wider">Reports Drafted</span>
-                <span className="p-1 bg-brand-surface rounded text-brand-primary"><FileText size={12} /></span>
+                <span className="text-[11px] xl:text-xs 2xl:text-sm font-bold text-brand-textSecondary uppercase tracking-wider">Reports Drafted</span>
+                <span className="p-1 xl:p-1.5 bg-brand-surface rounded text-brand-primary"><FileText size={12} className="xl:w-3.5 xl:h-3.5" /></span>
               </div>
-              <h2 className="text-2xl font-bold text-brand-textPrimary mt-4">{reports.length} Reports</h2>
-              <p className="text-[10px] text-brand-textSecondary mt-1">{completedCount} complete, {pendingCount} drafts</p>
+              <h2 className="text-2xl xl:text-3xl 2xl:text-4xl font-bold text-brand-textPrimary mt-4">{reports.length} Reports</h2>
+              <p className="text-[10px] xl:text-xs 2xl:text-sm text-brand-textSecondary mt-1">{completedCount} complete, {pendingCount} drafts</p>
             </div>
 
-            <div className="bg-white p-6 rounded-2xl border border-brand-border shadow-sm">
+            <div className="bg-white p-6 xl:p-8 rounded-2xl border border-brand-border shadow-sm">
               <div className="flex justify-between items-start">
-                <span className="text-[11px] font-bold text-brand-textSecondary uppercase tracking-wider">Borrower Profiles</span>
-                <span className="p-1 bg-brand-surface rounded text-brand-primary"><Users size={12} /></span>
+                <span className="text-[11px] xl:text-xs 2xl:text-sm font-bold text-brand-textSecondary uppercase tracking-wider">Borrower Profiles</span>
+                <span className="p-1 xl:p-1.5 bg-brand-surface rounded text-brand-primary"><Users size={12} className="xl:w-3.5 xl:h-3.5" /></span>
               </div>
-              <h2 className="text-2xl font-bold text-brand-textPrimary mt-4">{borrowers.length} Entities</h2>
-              <p className="text-[10px] text-brand-textSecondary mt-1">MSME & Corporate accounts</p>
+              <h2 className="text-2xl xl:text-3xl 2xl:text-4xl font-bold text-brand-textPrimary mt-4">{borrowers.length} Entities</h2>
+              <p className="text-[10px] xl:text-xs 2xl:text-sm text-brand-textSecondary mt-1">MSME & Corporate accounts</p>
             </div>
 
-            <div className="bg-white p-6 rounded-2xl border border-brand-border shadow-sm">
+            <div className="bg-white p-6 xl:p-8 rounded-2xl border border-brand-border shadow-sm">
               <div className="flex justify-between items-start">
-                <span className="text-[11px] font-bold text-brand-textSecondary uppercase tracking-wider">Avg. Ratios Checked</span>
-                <span className="p-1 bg-brand-surface rounded text-brand-primary"><TrendingUp size={12} /></span>
+                <span className="text-[11px] xl:text-xs 2xl:text-sm font-bold text-brand-textSecondary uppercase tracking-wider">Avg. Ratios Checked</span>
+                <span className="p-1 xl:p-1.5 bg-brand-surface rounded text-brand-primary"><TrendingUp size={12} className="xl:w-3.5 xl:h-3.5" /></span>
               </div>
-              <h2 className="text-2xl font-bold text-brand-textPrimary mt-4">100%</h2>
-              <p className="text-[10px] text-brand-success font-bold mt-1">✓ Matching bank covenants</p>
+              <h2 className="text-2xl xl:text-3xl 2xl:text-4xl font-bold text-brand-textPrimary mt-4">100%</h2>
+              <p className="text-[10px] xl:text-xs 2xl:text-sm text-brand-success font-bold mt-1">✓ Matching bank covenants</p>
             </div>
           </div>
 
