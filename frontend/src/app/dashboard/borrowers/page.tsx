@@ -179,8 +179,8 @@ export default function BorrowersPage() {
 
       {/* Grid List */}
       {loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {[1, 2, 3].map(idx => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
+          {[1, 2, 3, 4, 5].map(idx => (
             <div key={idx} className="h-44 bg-white border border-brand-border rounded-2xl animate-pulse" />
           ))}
         </div>
@@ -191,7 +191,7 @@ export default function BorrowersPage() {
           <p className="text-[10px] text-brand-textSecondary mt-1">Click the button in the top right to onboard your first borrower.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
           {filteredBorrowers.map((borrower) => (
             <div key={borrower.id} className="bg-white p-6 rounded-2xl border border-brand-border shadow-sm flex flex-col justify-between hover:border-brand-primary/50 transition-colors">
               <div>

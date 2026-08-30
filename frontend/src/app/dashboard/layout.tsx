@@ -154,7 +154,7 @@ export default function DashboardLayout({
 
         {/* Content view window */}
         <main className="flex-1 overflow-y-auto p-6 md:p-8">
-          <div className="max-w-7xl mx-auto">
+          <div className="w-full">
             {children}
           </div>
         </main>
